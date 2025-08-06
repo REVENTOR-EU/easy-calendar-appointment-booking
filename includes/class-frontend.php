@@ -345,14 +345,14 @@ class EAB_Frontend {
                     
                     if ($slot_timestamp < $working_start_datetime->getTimestamp() || $slot_timestamp >= $working_end_datetime->getTimestamp()) {
                         $status = 'outside_hours';
-                        $reason = 'Outside working hours';
+                        $reason = __('Outside working hours.', 'easy-calendar-appointment-booking');
                     }
                     
                     // Override with booked status if applicable (includes CalDAV conflicts)
                     if (in_array($slot, $booked_slots) || in_array($slot, $caldav_conflicts)) {
                         $status = 'booked';
                         if (in_array($slot, $booked_slots)) {
-                            $reason = 'Already booked';
+                            $reason = __('Booked', 'easy-calendar-appointment-booking');
                         } else {
                             $reason = 'Booked (CalDAV conflict)';
                         }

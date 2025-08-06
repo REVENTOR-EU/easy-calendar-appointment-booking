@@ -76,7 +76,7 @@ class EAB_Admin {
     
     public function sanitize_appointment_types($value) {
         if (!is_array($value)) {
-            return array(array('name' => 'General Consultation', 'duration' => 30));
+            return array(array('name' => __('General Consultation', 'easy-calendar-appointment-booking'), 'duration' => 30));
         }
         
         $sanitized = array();
@@ -106,7 +106,7 @@ class EAB_Admin {
         
         // Ensure at least one appointment type exists
         if (empty($sanitized)) {
-            $sanitized = array(array('name' => 'General Consultation', 'duration' => 30));
+            $sanitized = array(array('name' => __('General Consultation', 'easy-calendar-appointment-booking'), 'duration' => 30));
         }
         
         return $sanitized;
@@ -142,7 +142,7 @@ class EAB_Admin {
         $timeslot_duration = get_option('eab_timeslot_duration', 30);
         $booking_days_ahead = get_option('eab_booking_days_ahead', 7);
         $theme_color = get_option('eab_theme_color', '#007cba');
-        $appointment_types = get_option('eab_appointment_types', array(array('name' => 'General Consultation', 'duration' => 30)));
+        $appointment_types = get_option('eab_appointment_types', array(array('name' => __('General Consultation', 'easy-calendar-appointment-booking'), 'duration' => 30)));
         
         // Convert old format to new format if needed
         if (!empty($appointment_types) && isset($appointment_types[0]) && is_string($appointment_types[0])) {
@@ -291,7 +291,7 @@ class EAB_Admin {
         if (empty($appointment_types)) {
             $appointment_types = array(
                 array(
-                    'name' => 'General Consultation',
+                    'name' => __('General Consultation', 'easy-calendar-appointment-booking'),
                     'duration' => 30
                 )
             );
@@ -349,7 +349,7 @@ class EAB_Admin {
         }
         
         if (empty($appointment_types)) {
-            $appointment_types = array(array('name' => 'General Consultation', 'duration' => 30));
+            $appointment_types = array(array('name' => __('General Consultation', 'easy-calendar-appointment-booking'), 'duration' => 30));
         }
         
         update_option('eab_appointment_types', $appointment_types);
@@ -477,7 +477,7 @@ class EAB_Admin {
             'eab_timeslot_duration' => get_option('eab_timeslot_duration', 30),
             'eab_booking_days_ahead' => get_option('eab_booking_days_ahead', 30),
             'eab_theme_color' => get_option('eab_theme_color', '#007cba'),
-            'eab_appointment_types' => get_option('eab_appointment_types', array(array('name' => 'General Consultation', 'duration' => 30))),
+            'eab_appointment_types' => get_option('eab_appointment_types', array(array('name' => __('General Consultation', 'easy-calendar-appointment-booking'), 'duration' => 30))),
             'eab_caldav_url' => get_option('eab_caldav_url', ''),
             'eab_caldav_username' => get_option('eab_caldav_username', ''),
             'eab_caldav_password' => get_option('eab_caldav_password', ''),

@@ -125,7 +125,7 @@ class EasyAppointmentBooking {
                 'timeslot_duration' => 30,
                 'booking_days_ahead' => 30,
                 'theme_color' => '#007cba',
-                'appointment_types' => [['name' => 'General Consultation', 'duration' => 30]],
+                'appointment_types' => [['name' => __('General Consultation', 'easy-calendar-appointment-booking'), 'duration' => 30]],
                 'caldav_url' => '',
                 'caldav_username' => '',
                 'caldav_password' => ''

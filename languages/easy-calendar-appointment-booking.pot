@@ -1,0 +1,507 @@
+# Copyright (C) 2024 Easy Calendar Appointment Booking
+# This file is distributed under the same license as the Easy Calendar Appointment Booking package.
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Easy Calendar Appointment Booking 1.0.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/easy-calendar-appointment-booking/\n"
+"POT-Creation-Date: 2024-01-01 12:00+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+# Admin page titles
+msgid "Easy Calendar Appointment Booking"
+msgstr ""
+
+msgid "Easy Calendar<br>Appointment Booking"
+msgstr ""
+
+# General terms
+msgid "Save Settings"
+msgstr ""
+
+msgid "Saving..."
+msgstr ""
+
+msgid "Settings saved successfully!"
+msgstr ""
+
+msgid "Error saving settings. Please try again."
+msgstr ""
+
+msgid "Loading..."
+msgstr ""
+
+# Import/Export
+msgid "Import/Export Settings"
+msgstr ""
+
+msgid "Export Settings"
+msgstr ""
+
+msgid "Import Settings"
+msgstr ""
+
+msgid "Export your current settings to a JSON file or import settings from a previously exported file."
+msgstr ""
+
+# Quick Setup Guide
+msgid "Quick Setup Guide"
+msgstr ""
+
+msgid "Configure your time slot duration and booking period"
+msgstr ""
+
+msgid "Set up your appointment types"
+msgstr ""
+
+msgid "Choose your theme color"
+msgstr ""
+
+msgid "Configure email notifications"
+msgstr ""
+
+msgid "Configure CalDAV integration"
+msgstr ""
+
+msgid "Copy the shortcode and paste it on any page"
+msgstr ""
+
+# General Settings
+msgid "General Settings"
+msgstr ""
+
+msgid "Booking Days Ahead"
+msgstr ""
+
+msgid "How many days in advance customers can book appointments."
+msgstr ""
+
+msgid "Theme Color"
+msgstr ""
+
+msgid "Primary color for buttons and form elements."
+msgstr ""
+
+msgid "Timezone"
+msgstr ""
+
+msgid "Select the timezone for your booking system. This affects appointment times and calendar synchronization."
+msgstr ""
+
+msgid "Time Format"
+msgstr ""
+
+msgid "Choose how time should be displayed throughout the booking system."
+msgstr ""
+
+msgid "Date Format"
+msgstr ""
+
+msgid "Choose how dates should be displayed throughout the booking system."
+msgstr ""
+
+# Booking Restrictions
+msgid "Booking Restrictions"
+msgstr ""
+
+msgid "Minimum Booking Advance Time"
+msgstr ""
+
+msgid "hour"
+msgstr ""
+
+msgid "hours"
+msgstr ""
+
+msgid "Next day"
+msgstr ""
+
+msgid "Minimum time required between now and the earliest possible appointment."
+msgstr ""
+
+# Working Hours
+msgid "Working Hours"
+msgstr ""
+
+msgid "Start Time"
+msgstr ""
+
+msgid "Daily working hours start time."
+msgstr ""
+
+msgid "End Time"
+msgstr ""
+
+msgid "Daily working hours end time."
+msgstr ""
+
+msgid "Working Days"
+msgstr ""
+
+msgid "Monday"
+msgstr ""
+
+msgid "Tuesday"
+msgstr ""
+
+msgid "Wednesday"
+msgstr ""
+
+msgid "Thursday"
+msgstr ""
+
+msgid "Friday"
+msgstr ""
+
+msgid "Saturday"
+msgstr ""
+
+msgid "Sunday"
+msgstr ""
+
+msgid "Select the days when appointments can be booked."
+msgstr ""
+
+# Appointment Types
+msgid "Appointment Types"
+msgstr ""
+
+msgid "Available Appointment Types"
+msgstr ""
+
+msgid "Appointment type name"
+msgstr ""
+
+msgid "min"
+msgstr ""
+
+msgid "minutes"
+msgstr ""
+
+msgid "Remove this appointment type"
+msgstr ""
+
+msgid "Add Type"
+msgstr ""
+
+msgid "Define the types of appointments customers can book. Use the main \"Save Settings\" button to save all changes."
+msgstr ""
+
+# Email Notifications
+msgid "Email Notifications"
+msgstr ""
+
+msgid "Sender Name"
+msgstr ""
+
+msgid "Name that will appear in the From field of notification emails."
+msgstr ""
+
+msgid "Sender Email"
+msgstr ""
+
+msgid "Email address that will be used to send notification emails."
+msgstr ""
+
+# CalDAV Integration
+msgid "CalDAV Integration"
+msgstr ""
+
+msgid "CalDAV URL"
+msgstr ""
+
+msgid "URL to your CalDAV calendar (e.g., Google Calendar, iCloud, etc.)."
+msgstr ""
+
+msgid "Username"
+msgstr ""
+
+msgid "Your CalDAV username or email address."
+msgstr ""
+
+msgid "Password/App Password"
+msgstr ""
+
+msgid "Your CalDAV password or app-specific password."
+msgstr ""
+
+msgid "Test Connection"
+msgstr ""
+
+msgid "Testing connection..."
+msgstr ""
+
+msgid "CalDAV connection successful!"
+msgstr ""
+
+msgid "CalDAV connection failed. Please check your settings."
+msgstr ""
+
+msgid "Today's Schedule Preview"
+msgstr ""
+
+msgid "Loading time slots..."
+msgstr ""
+
+msgid "Available"
+msgstr ""
+
+msgid "Past Time"
+msgstr ""
+
+msgid "Booked"
+msgstr ""
+
+msgid "Outside Hours"
+msgstr ""
+
+# Shortcode
+msgid "Shortcode"
+msgstr ""
+
+msgid "Copy to clipboard"
+msgstr ""
+
+msgid "Use this shortcode to display the booking form on any page or post."
+msgstr ""
+
+# Support
+msgid "Support"
+msgstr ""
+
+msgid "Need help, want to report a bug, or have an improvement idea?"
+msgstr ""
+
+msgid "Please visit our %s to get support, report issues, or share your suggestions."
+msgstr ""
+
+msgid "WordPress plugin page"
+msgstr ""
+
+msgid "Get Support"
+msgstr ""
+
+msgid "Leave a Review"
+msgstr ""
+
+# Plugin Information
+msgid "Plugin Information"
+msgstr ""
+
+msgid "Version:"
+msgstr ""
+
+msgid "Server Time:"
+msgstr ""
+
+msgid "System Time (Plugin):"
+msgstr ""
+
+# Frontend Booking Form
+msgid "Book Your Appointment"
+msgstr ""
+
+msgid "Service"
+msgstr ""
+
+msgid "Date & Time"
+msgstr ""
+
+msgid "Your Details"
+msgstr ""
+
+msgid "Select Appointment Type"
+msgstr ""
+
+msgid "Next"
+msgstr ""
+
+msgid "Previous"
+msgstr ""
+
+msgid "Select Date & Time"
+msgstr ""
+
+msgid "Choose Date"
+msgstr ""
+
+msgid "Available Times"
+msgstr ""
+
+msgid "Please select a date first"
+msgstr ""
+
+msgid "Your Information"
+msgstr ""
+
+msgid "Full Name"
+msgstr ""
+
+msgid "Email Address"
+msgstr ""
+
+msgid "Phone Number"
+msgstr ""
+
+msgid "Additional Notes"
+msgstr ""
+
+msgid "Any additional information or special requests..."
+msgstr ""
+
+msgid "Book Appointment"
+msgstr ""
+
+msgid "Appointment Booked Successfully!"
+msgstr ""
+
+msgid "Thank you for booking with us. You will receive a confirmation email shortly."
+msgstr ""
+
+msgid "Book Another Appointment"
+msgstr ""
+
+msgid "Processing your appointment..."
+msgstr ""
+
+msgid "Powered by"
+msgstr ""
+
+msgid "Get your own booking system!"
+msgstr ""
+
+# Frontend Messages
+msgid "No available time slots for this date."
+msgstr ""
+
+msgid "Appointment booked successfully!"
+msgstr ""
+
+msgid "Error booking appointment. Please try again."
+msgstr ""
+
+msgid "Please fill in all required fields."
+msgstr ""
+
+msgid "Please enter a valid email address."
+msgstr ""
+
+msgid "Syncing with calendar..."
+msgstr ""
+
+msgid "Outside working hours."
+msgstr ""
+
+msgid "This date is outside working hours."
+msgstr ""
+
+msgid "Please select a date that meets the minimum advance time requirement."
+msgstr ""
+
+msgid "This time slot is no longer available."
+msgstr ""
+
+msgid "This time slot conflicts with an existing calendar event."
+msgstr ""
+
+msgid "Security check failed."
+msgstr ""
+
+msgid "CalDAV not configured, no sync needed."
+msgstr ""
+
+msgid "Failed to connect to CalDAV server."
+msgstr ""
+
+msgid "CalDAV connection verified. Real-time fetching is active."
+msgstr ""
+
+msgid "CalDAV connection test failed: "
+msgstr ""
+
+# Email Templates
+msgid "Your appointment with %s has been updated"
+msgstr ""
+
+msgid "Appointment Update"
+msgstr ""
+
+msgid "Your appointment has been updated with the following details:"
+msgstr ""
+
+msgid "Your appointment with %s has been confirmed"
+msgstr ""
+
+msgid "Appointment Confirmation"
+msgstr ""
+
+msgid "Your appointment has been confirmed with the following details:"
+msgstr ""
+
+msgid "Dear %s,"
+msgstr ""
+
+msgid "Service:"
+msgstr ""
+
+msgid "Date:"
+msgstr ""
+
+msgid "Time:"
+msgstr ""
+
+msgid "Duration:"
+msgstr ""
+
+msgid "Name:"
+msgstr ""
+
+msgid "Notes:"
+msgstr ""
+
+msgid "We look forward to seeing you!"
+msgstr ""
+
+msgid "You can add this appointment to your calendar using the attached ICS file."
+msgstr ""
+
+msgid "If you need to make any changes to your appointment, please contact us."
+msgstr ""
+
+msgid "Thank you for choosing our services."
+msgstr ""
+
+msgid "This is an automated email from %s."
+msgstr ""
+
+# Validation Messages
+msgid "The %s field is required."
+msgstr ""
+
+msgid "Appointment date must be in the future."
+msgstr ""
+
+msgid "Appointment date is too far in the future."
+msgstr ""
+
+msgid "Invalid appointment time format."
+msgstr ""
+
+# Status Messages
+msgid "Confirmed"
+msgstr ""
+
+msgid "Pending"
+msgstr ""
+
+msgid "Cancelled"
+msgstr ""
+
+msgid "Completed"
+msgstr ""

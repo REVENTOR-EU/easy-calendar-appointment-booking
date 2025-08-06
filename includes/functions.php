@@ -12,8 +12,8 @@ if (!defined('ABSPATH')) {
  * Get formatted appointment types for display
  */
 function eab_get_appointment_types(): array {
-    $types = get_option('eab_appointment_types', ['General Consultation']);
-    return is_array($types) ? $types : ['General Consultation'];
+    $types = get_option('eab_appointment_types', [__('General Consultation', 'easy-calendar-appointment-booking')]);
+    return is_array($types) ? $types : [__('General Consultation', 'easy-calendar-appointment-booking')];
 }
 
 /**
@@ -264,7 +264,7 @@ function eab_get_version() {
 function eab_log($message, $level = 'info') {
     // TEMPORARY: Force logging regardless of WP_DEBUG for testing
     $log_file = plugin_dir_path(__FILE__) . '../caldav-debug.log';
-    $timestamp = date('Y-m-d H:i:s');
+    $timestamp = gmdate('Y-m-d H:i:s');
     $log_entry = "[{$timestamp}] [EAB " . strtoupper($level) . "] {$message}" . PHP_EOL;
     file_put_contents($log_file, $log_entry, FILE_APPEND | LOCK_EX);
 }

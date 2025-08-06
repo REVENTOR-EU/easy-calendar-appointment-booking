@@ -8,7 +8,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-$appointment_types = get_option('eab_appointment_types', array(array('name' => 'General Consultation', 'duration' => 30)));
+$appointment_types = get_option('eab_appointment_types', array(array('name' => __('General Consultation', 'easy-calendar-appointment-booking'), 'duration' => 30)));
 ?>
 
 <div class="wrap eab-admin-wrap">
@@ -190,7 +190,7 @@ $appointment_types = get_option('eab_appointment_types', array(array('name' => '
                             <?php 
                             // Ensure $appointment_types is always an array
                             if (!is_array($appointment_types)) {
-                                $appointment_types = array(array('name' => 'General Consultation', 'duration' => 30));
+                                $appointment_types = array(array('name' => __('General Consultation', 'easy-calendar-appointment-booking'), 'duration' => 30));
                             }
                             
                             // Convert old format to new format if needed
@@ -335,6 +335,32 @@ $appointment_types = get_option('eab_appointment_types', array(array('name' => '
                             </button>
                         </div>
                         <p class="description"><?php esc_html_e('Use this shortcode to display the booking form on any page or post.', 'easy-calendar-appointment-booking'); ?></p>
+                    </div>
+                </div>
+                
+                <!-- Support -->
+                <div class="eab-settings-section">
+                    <h3><?php esc_html_e('Support', 'easy-calendar-appointment-booking'); ?></h3>
+                    
+                    <div class="eab-field-group">
+                        <p><?php esc_html_e('Need help, want to report a bug, or have an improvement idea?', 'easy-calendar-appointment-booking'); ?></p>
+                        <p><?php 
+                            printf(
+                                /* translators: %s: WordPress plugin page URL */
+                                esc_html__('Please visit our %s to get support, report issues, or share your suggestions.', 'easy-calendar-appointment-booking'),
+                                '<a href="https://wordpress.org/plugins/easy-calendar-appointment-booking/" target="_blank" rel="noopener noreferrer">' . esc_html__('WordPress plugin page', 'easy-calendar-appointment-booking') . '</a>'
+                            );
+                        ?></p>
+                        <div class="eab-support-buttons">
+                            <a href="https://wordpress.org/support/plugin/easy-calendar-appointment-booking/" target="_blank" rel="noopener noreferrer" class="button button-secondary">
+                                <span class="dashicons dashicons-sos"></span>
+                                <?php esc_html_e('Get Support', 'easy-calendar-appointment-booking'); ?>
+                            </a>
+                            <a href="https://wordpress.org/plugins/easy-calendar-appointment-booking/#reviews" target="_blank" rel="noopener noreferrer" class="button button-secondary">
+                                <span class="dashicons dashicons-star-filled"></span>
+                                <?php esc_html_e('Leave a Review', 'easy-calendar-appointment-booking'); ?>
+                            </a>
+                        </div>
                     </div>
                 </div>
                 

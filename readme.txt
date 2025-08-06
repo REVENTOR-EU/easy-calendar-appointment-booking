@@ -1,7 +1,7 @@
 === Easy Calendar Appointment Booking ===
 Contributors: REVENTOR
 Tags: appointments, booking, calendar, scheduling
-Requires at least: 5.0
+Requires at least: 6.3
 Tested up to: 6.8
 Stable tag: 1.0.0
 Requires PHP: 8.1

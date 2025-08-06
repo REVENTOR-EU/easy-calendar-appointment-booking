@@ -245,7 +245,7 @@
     
     function initShortcodeCopy() {
         $('#copy-shortcode').on('click', function() {
-            const shortcode = '[easy_appointment_booking]';
+            const shortcode = '[easy_calendar_appointment_booking]';
             
             if (navigator.clipboard) {
                 navigator.clipboard.writeText(shortcode).then(function() {

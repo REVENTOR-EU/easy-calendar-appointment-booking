@@ -72,7 +72,7 @@ class EAB_Frontend {
     
     private function has_booking_shortcode(): bool {
         global $post;
-        return is_a($post, 'WP_Post') && has_shortcode($post->post_content, 'easy_appointment_booking');
+        return is_a($post, 'WP_Post') && has_shortcode($post->post_content, 'easy_calendar_appointment_booking');
     }
     
     private function get_dynamic_css(string $theme_color): string {

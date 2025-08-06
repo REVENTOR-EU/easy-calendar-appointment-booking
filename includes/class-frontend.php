@@ -280,7 +280,7 @@ class EAB_Frontend {
             return;
         }
         
-        $all_slots = $this->generate_time_slots($date, $timeslot_duration);
+        $all_slots = $this->generate_time_slots($date, $timeslot_duration, $is_admin_preview);
         
         // Get booked slots and CalDAV conflicts
         $booked_slots = $this->get_booked_slots($date);
@@ -288,13 +288,31 @@ class EAB_Frontend {
         // Get CalDAV conflicts directly from server (no local storage)
         $caldav_conflicts = $this->get_caldav_conflicts($date, $all_slots, $timeslot_duration);
         
+        // Debug logging for admin preview
+        if ($is_admin_preview && defined('WP_DEBUG') && WP_DEBUG) {
+            $this->debug_log('=== Admin Preview CalDAV Debug ===');
+            $this->debug_log('Date: ' . $date);
+            $this->debug_log('All slots: ' . implode(', ', $all_slots));
+            $this->debug_log('Booked slots: ' . implode(', ', $booked_slots));
+            $this->debug_log('CalDAV conflicts: ' . implode(', ', $caldav_conflicts));
+        }
+        
         // Calculate available slots
         $available_slots = array_diff($all_slots, $booked_slots, $caldav_conflicts);
         
         // For admin preview, return both available and unavailable slots with status
         if ($is_admin_preview) {
             $slot_data = [];
-            $now = current_time('timestamp');
+            
+            // Get timezone-aware current time for admin preview
+            try {
+                $timezone_string = $this->get_timezone_string();
+                $timezone = new DateTimeZone($timezone_string);
+                $now_datetime = new DateTime('now', $timezone);
+                $now = $now_datetime->getTimestamp();
+            } catch (Exception $e) {
+                $now = current_time('timestamp');
+            }
             $today_date = gmdate('Y-m-d', $now);
             
             foreach ($all_slots as $slot) {
@@ -362,29 +380,26 @@ class EAB_Frontend {
         }
     }
     
-    private function generate_time_slots(string $date, int $duration): array {
+    private function generate_time_slots(string $date, int $duration, bool $is_admin_preview = false): array {
         $slots = [];
         $working_hours_start = get_option('eab_working_hours_start', '09:00');
         $working_hours_end = get_option('eab_working_hours_end', '17:00');
         
-        // Get timezone setting using WordPress built-in function
+        // Get timezone setting using the plugin's timezone function
         try {
-            $timezone_string = wp_timezone_string();
+            $timezone_string = $this->get_timezone_string();
             $timezone = new DateTimeZone($timezone_string);
         } catch (Exception $e) {
             $timezone = new DateTimeZone('UTC');
         }
         
         // For admin preview, generate all slots regardless of time
-        // Only consider it admin preview if explicitly set via admin_preview parameter
-        // phpcs:disable WordPress.Security.NonceVerification.Missing -- Nonce verified in get_available_slots()
-        $is_admin_preview = isset($_POST['admin_preview']) && sanitize_text_field(wp_unslash($_POST['admin_preview'])) === 'true';
         // phpcs:enable WordPress.Security.NonceVerification.Missing
         
         if ($is_admin_preview) {
             // For admin preview, generate slots within working hours but show all statuses
             try {
-                $timezone_string = wp_timezone_string();
+                $timezone_string = $this->get_timezone_string();
                 $timezone = new DateTimeZone($timezone_string);
             } catch (Exception $e) {
                 $timezone = new DateTimeZone('UTC');
@@ -417,15 +432,34 @@ class EAB_Frontend {
             $now_datetime = new DateTime('now', $timezone);
             $current_time = $now_datetime->getTimestamp();
             
+            // Debug logging for time calculations
+            $this->debug_log("=== Time Slot Generation Debug ===");
+            $this->debug_log("Date: {$date}");
+            $this->debug_log("Current time: " . $now_datetime->format('Y-m-d H:i:s T'));
+            $this->debug_log("Current timestamp: {$current_time}");
+            $this->debug_log("Min advance timestamp: {$min_advance_time}");
+            $this->debug_log("Min advance setting: " . get_option('eab_min_booking_advance', '2h'));
+            $this->debug_log("Working hours: {$working_hours_start} - {$working_hours_end}");
+            $this->debug_log("Timezone: " . $timezone->getName());
+            
             for ($time = $start_time; $time < $end_time; $time += ($duration * 60)) {
                 // Use timezone-aware formatting
                 $slot_datetime = new DateTime('@' . $time);
                 $slot_datetime->setTimezone($timezone);
                 $slot_time = $slot_datetime->format('H:i');
                 
+                // Debug logging for time slot filtering
+                $this->debug_log("Checking slot: {$slot_time}");
+                $this->debug_log("Slot timestamp: {$time}, Current time: {$current_time}, Min advance time: {$min_advance_time}");
+                $this->debug_log("Time > current: " . ($time > $current_time ? 'true' : 'false'));
+                $this->debug_log("Time >= min advance: " . ($time >= $min_advance_time ? 'true' : 'false'));
+                
                 // Skip slots that are in the past or don't meet minimum advance time
                 if ($time > $current_time && $time >= $min_advance_time) {
                     $slots[] = $slot_time;
+                    $this->debug_log("Slot {$slot_time} added to available slots");
+                } else {
+                    $this->debug_log("Slot {$slot_time} filtered out");
                 }
             }
         }
@@ -493,24 +527,48 @@ class EAB_Frontend {
     private function get_minimum_advance_timestamp() {
         $min_booking_advance = get_option('eab_min_booking_advance', '2h');
         
+        // TEMPORARY DEBUG: Override to test if advance time is the issue
+        // $min_booking_advance = '5min'; // Uncomment to test with 5 minutes advance
+        
         // Get timezone setting and current time in that timezone
         $timezone_string = $this->get_timezone_string();
         $timezone = new DateTimeZone($timezone_string);
         $now_datetime = new DateTime('now', $timezone);
         $now = $now_datetime->getTimestamp();
         
+        // Debug logging for minimum advance calculation
+        $this->debug_log("=== Minimum Advance Calculation ===");
+        $this->debug_log("Min booking advance setting: {$min_booking_advance}");
+        $this->debug_log("Current time: " . $now_datetime->format('Y-m-d H:i:s T'));
+        $this->debug_log("Current timestamp: {$now}");
+        
         switch ($min_booking_advance) {
+            case '5min':
+                $result = $now + (5 * 60); // 5 minutes for testing
+                break;
             case '1h':
-                return $now + (1 * 60 * 60);
+                $result = $now + (1 * 60 * 60);
+                break;
             case '2h':
-                return $now + (2 * 60 * 60);
+                $result = $now + (2 * 60 * 60);
+                break;
             case '4h':
-                return $now + (4 * 60 * 60);
+                $result = $now + (4 * 60 * 60);
+                break;
             case 'next_day':
-                return strtotime('tomorrow', $now);
+                $result = strtotime('tomorrow', $now);
+                break;
             default:
-                return $now + (2 * 60 * 60); // Default to 2 hours
+                $result = $now + (2 * 60 * 60); // Default to 2 hours
+                break;
         }
+        
+        $this->debug_log("Min advance timestamp: {$result}");
+        $min_advance_datetime = new DateTime('@' . $result);
+        $min_advance_datetime->setTimezone($timezone);
+        $this->debug_log("Min advance time: " . $min_advance_datetime->format('Y-m-d H:i:s T'));
+        
+        return $result;
     }
     
     public function book_appointment(): void {
@@ -655,6 +713,10 @@ class EAB_Frontend {
         } catch (Exception $e) {
             wp_send_json_error(['message' => __('CalDAV connection test failed: ', 'easy-calendar-appointment-booking') . $e->getMessage()]);
         }
+    }
+    
+    private function debug_log($message) {
+        eab_log($message);
     }
     
     /**

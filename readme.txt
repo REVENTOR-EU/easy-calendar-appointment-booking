@@ -33,7 +33,7 @@ Easy Calendar Appointment Booking is a WordPress plugin that allows you to manag
 
 = How do I display the booking form? =
 
-Use the shortcode [eab_booking_form] to display the booking form on any page or post.
+Use the shortcode [easy_calendar_appointment_booking] to display the booking form on any page or post.
 
 = Can I customize the available time slots? =
 

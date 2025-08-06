@@ -235,6 +235,13 @@
         // Show loading state
         container.html('<div class="eab-loading-slots"><div class="eab-spinner"></div><p>' + (eab_frontend.strings.loading || 'Loading available times...') + '</p></div>');
         
+        // Debug logging for AJAX request
+        console.log('=== AJAX Request Debug ===');
+        console.log('Selected date:', date);
+        console.log('Selected appointment type:', appointmentType);
+        console.log('Appointment duration:', appointmentDuration);
+        console.log('Current browser time:', new Date().toString());
+        
         $.ajax({
             url: eab_frontend.ajax_url,
             type: 'POST',
@@ -275,8 +282,15 @@
         const container = $('#time-slots-container');
         let html = '';
         
+        // Debug logging for time slots
+        console.log('=== Time Slots Debug ===');
+        console.log('Current time:', new Date().toLocaleTimeString());
+        console.log('Available slots received:', slots);
+        console.log('Number of slots:', slots.length);
+        
         slots.forEach(function(slot) {
             html += '<div class="eab-time-slot" data-time="' + slot + '">' + formatTime(slot) + '</div>';
+            console.log('Displaying slot:', slot, 'formatted as:', formatTime(slot));
         });
         
         container.html(html);

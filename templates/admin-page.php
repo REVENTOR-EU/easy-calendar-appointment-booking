@@ -329,7 +329,7 @@ $appointment_types = get_option('eab_appointment_types', array(array('name' => '
                     
                     <div class="eab-field-group">
                         <div class="eab-shortcode-box">
-                            <code>[easy_appointment_booking]</code>
+                            <code>[easy_calendar_appointment_booking]</code>
                             <button type="button" class="eab-copy-shortcode" title="<?php esc_attr_e('Copy to clipboard', 'easy-calendar-appointment-booking'); ?>">
                                 <span class="dashicons dashicons-admin-page"></span>
                             </button>

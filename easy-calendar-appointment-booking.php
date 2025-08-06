@@ -1,14 +1,18 @@
 <?php
 /**
  * Plugin Name: Easy Calendar Appointment Booking
+ * Description: An easy calendar appointment booking system with CalDAV integration for seamless scheduling and calendar synchronization.
  * Plugin URI: https://wordpress.org/plugins/easy-calendar-appointment-booking/
- * Description: An easy calendar appointment booking system with CalDAV integration
  * Version: 1.0.0
- * Author: REVENTOR.EU
+ * Author: REVENTOR
  * Author URI: https://reventor.eu
  * License: GPL v2 or later
+ * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain: easy-calendar-appointment-booking
- * Domain Path: /languages
+ * Requires at least: 6.3
+ * Tested up to: 6.8.2
+ * Requires PHP: 8.1
+ * Tags: appointments, booking, calendar, caldav, scheduling
  */
 
 // Prevent direct access
@@ -72,7 +76,7 @@ class EasyAppointmentBooking {
         }
         
         // Register shortcode
-        add_shortcode('easy_appointment_booking', array($this, 'booking_form_shortcode'));
+        add_shortcode('easy_calendar_appointment_booking', array($this, 'booking_form_shortcode'));
     }
     
     private function include_files() {

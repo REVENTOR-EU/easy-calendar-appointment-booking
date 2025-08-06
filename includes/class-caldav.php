@@ -66,7 +66,14 @@ class EAB_CalDAV {
         $conflicts = array();
         $events = $this->get_events_for_date($date);
         
-
+        // Force logging for debugging
+        eab_log("CalDAV get_conflicts called for date: $date with " . count($time_slots) . " time slots");
+        eab_log("Time slots: " . implode(', ', $time_slots));
+        eab_log('Date: ' . $date);
+        eab_log('Found ' . count($events) . ' events');
+        foreach ($events as $i => $event) {
+            eab_log('Event ' . $i . ': ' . gmdate('Y-m-d H:i:s', $event['start']) . ' to ' . gmdate('Y-m-d H:i:s', $event['end']) . ' (' . (isset($event['summary']) ? $event['summary'] : 'No summary') . ')');
+        }
         
         if (empty($events)) {
             return $conflicts;
@@ -76,17 +83,26 @@ class EAB_CalDAV {
             $slot_start = strtotime($date . ' ' . $slot);
             $slot_end = $slot_start + ($duration * 60);
             
-
+            // Debug logging for specific slot
+            if (defined('WP_DEBUG') && WP_DEBUG && $slot === '16:30') {
+                $this->debug_log('Checking slot 16:30: ' . gmdate('Y-m-d H:i:s', $slot_start) . ' to ' . gmdate('Y-m-d H:i:s', $slot_end));
+            }
             
             foreach ($events as $event) {
                 if ($this->times_overlap($slot_start, $slot_end, $event['start'], $event['end'])) {
                     $conflicts[] = $slot;
+                    if (defined('WP_DEBUG') && WP_DEBUG && $slot === '16:30') {
+                        $this->debug_log('CONFLICT FOUND for 16:30 with event: ' . gmdate('Y-m-d H:i:s', $event['start']) . ' to ' . gmdate('Y-m-d H:i:s', $event['end']));
+                    }
                     break;
                 }
             }
         }
         
-
+        if (defined('WP_DEBUG') && WP_DEBUG) {
+            $this->debug_log('Total conflicts found: ' . count($conflicts) . ' (' . implode(', ', $conflicts) . ')');
+        }
+        
         return $conflicts;
     }
     
@@ -94,8 +110,10 @@ class EAB_CalDAV {
         $start_date = $date . 'T00:00:00Z';
         $end_date = $date . 'T23:59:59Z';
 
-
-
+        if (defined('WP_DEBUG') && WP_DEBUG) {
+            $this->debug_log('Fetching events for date range: ' . $start_date . ' to ' . $end_date);
+            $this->debug_log('CalDAV URL: ' . $this->caldav_url);
+        }
 
         $report_body = '<?xml version="1.0" encoding="utf-8" ?>
 <C:calendar-query xmlns:D="DAV:" xmlns:C="urn:ietf:params:xml:ns:caldav">
@@ -124,16 +142,34 @@ class EAB_CalDAV {
         ));
 
         if (is_wp_error($response)) {
+            if (defined('WP_DEBUG') && WP_DEBUG) {
+                $this->debug_log('Request failed: ' . $response->get_error_message());
+            }
             return array();
         }
         
         $response_code = wp_remote_retrieve_response_code($response);
         
+        if (defined('WP_DEBUG') && WP_DEBUG) {
+            $this->debug_log('Response code: ' . $response_code);
+        }
+        
         if ($response_code !== 207) {
+            if (defined('WP_DEBUG') && WP_DEBUG) {
+                $this->debug_log('Unexpected response code: ' . $response_code);
+                $body = wp_remote_retrieve_body($response);
+                $this->debug_log('Response body length: ' . strlen($body));
+                $this->debug_log('Response body preview: ' . substr($body, 0, 500));
+            }
             return array();
         }
 
         $body = wp_remote_retrieve_body($response);
+        
+        if (defined('WP_DEBUG') && WP_DEBUG) {
+            $this->debug_log('Response body length: ' . strlen($body));
+            $this->debug_log('Response body preview: ' . substr($body, 0, 500));
+        }
         
         return $this->parse_calendar_events($body, $date);
     }
@@ -240,6 +276,9 @@ class EAB_CalDAV {
                 return null;
             }
             
+            $timestamp = null;
+            $is_utc = false;
+            
             // Handle different datetime formats
             if (strlen($datetime_str) === 8) {
                 // Date only format: YYYYMMDD
@@ -251,6 +290,7 @@ class EAB_CalDAV {
                 $formatted = substr($date_part, 0, 4) . '-' . substr($date_part, 4, 2) . '-' . substr($date_part, 6, 2) . ' ' .
                             substr($time_part, 0, 2) . ':' . substr($time_part, 2, 2) . ':' . substr($time_part, 4, 2);
                 $timestamp = strtotime($formatted . ' UTC');
+                $is_utc = true;
             } else {
                 // Try to parse as-is
                 $timestamp = strtotime($datetime_str);
@@ -260,6 +300,23 @@ class EAB_CalDAV {
             if ($timestamp === false || $timestamp === -1) {
                 // Failed to parse datetime, return null
                 return null;
+            }
+            
+            // Convert UTC timestamp to local timezone if needed
+            if ($is_utc) {
+                $local_timezone = $this->get_timezone_string();
+                $original_timestamp = $timestamp;
+                eab_log('CalDAV timezone conversion - Original UTC timestamp: ' . $timestamp . ' (' . gmdate('Y-m-d H:i:s', $timestamp) . ' UTC)');
+                eab_log('CalDAV timezone conversion - Target timezone: ' . $local_timezone);
+                try {
+                    $utc_datetime = new DateTime('@' . $timestamp);
+                    $utc_datetime->setTimezone(new DateTimeZone($local_timezone));
+                    $timestamp = $utc_datetime->getTimestamp();
+                    eab_log('CalDAV timezone conversion - Converted timestamp: ' . $timestamp . ' (' . $utc_datetime->format('Y-m-d H:i:s T') . ')');
+                } catch (Exception $e) {
+                    // If timezone conversion fails, keep original timestamp
+                    eab_log('CalDAV timezone conversion failed: ' . $e->getMessage());
+                }
             }
             
             return $timestamp;
@@ -418,6 +475,24 @@ class EAB_CalDAV {
     
     // Note: sync_events method removed - we now fetch directly from CalDAV server
     // This eliminates the need for local storage and ensures real-time conflict checking
+    
+    /**
+     * Custom debug logging to plugin-specific log file
+     */
+    private function debug_log($message) {
+        if (!defined('WP_DEBUG') || !WP_DEBUG) {
+            return;
+        }
+        
+        // Use plugin directory for log file
+        $plugin_dir = dirname(dirname(__FILE__));
+        $log_file = $plugin_dir . '/caldav-debug.log';
+        $timestamp = current_time('Y-m-d H:i:s');
+        $log_entry = '[' . $timestamp . '] EAB CalDAV Debug - ' . $message . PHP_EOL;
+        
+        // Write to log file
+        file_put_contents($log_file, $log_entry, FILE_APPEND | LOCK_EX);
+    }
     
     /**
      * Get timezone string with fallback for older WordPress versions

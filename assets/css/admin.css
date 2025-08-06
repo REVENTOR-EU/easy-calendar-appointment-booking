@@ -1,0 +1,1843 @@
+/**
+ * Admin styles for Easy Calendar Appointment Booking
+ */
+
+.eab-admin-wrap {
+    width: 100%;
+    margin: 20px 0;
+    padding: 0 20px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    min-height: calc(100vh - 160px);
+    display: flex;
+    flex-direction: column;
+}
+
+.eab-admin-wrap h1 {
+    color: #1d2327;
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 30px;
+    margin-left: 30px;
+}
+
+/* Header Section */
+.eab-admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    background: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+    border-left: 4px solid #007cba;
+}
+
+.eab-logo h2 {
+    color: #1d2327;
+    font-size: 24px;
+    font-weight: 600;
+    margin: 0 0 5px 0;
+}
+
+.eab-subtitle {
+    color: #646970;
+    font-size: 14px;
+    margin: 0;
+    font-style: italic;
+}
+
+.eab-shortcode-info {
+    text-align: right;
+}
+
+.eab-shortcode-info h3 {
+    color: #1d2327;
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0 0 10px 0;
+}
+
+/* Quick Guide in Header */
+.eab-quick-guide-info {
+    text-align: right;
+    max-width: 400px;
+}
+
+.eab-quick-guide-info h3 {
+    color: #1d2327;
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0 0 10px 0;
+}
+
+.eab-quick-guide-info ol {
+    background: #f6f7f7;
+    padding: 16px 20px;
+    border-radius: 6px;
+    border: 1px solid #dcdcde;
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.eab-quick-guide-info ol li {
+    margin-bottom: 6px;
+    color: #1d2327;
+}
+
+.eab-quick-guide-info ol li:last-child {
+    margin-bottom: 0;
+}
+
+/* Setup Guide Styling */
+.eab-setup-guide {
+    margin: 0;
+    padding-left: 20px;
+    line-height: 1.6;
+}
+
+.eab-setup-guide li {
+    margin-bottom: 8px;
+    color: #1d2327;
+}
+
+.eab-setup-guide li:last-child {
+    margin-bottom: 0;
+}
+
+/* Export/Import Buttons */
+.eab-export-import-buttons {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.eab-export-import-buttons .button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.eab-shortcode-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #f6f7f7;
+    padding: 12px 16px;
+    border-radius: 6px;
+    border: 1px solid #dcdcde;
+    margin-bottom: 8px;
+}
+
+.eab-shortcode-box code {
+    background: none;
+    padding: 0;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    font-size: 14px;
+    color: #d63384;
+    font-weight: 600;
+}
+
+.eab-copy-shortcode {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #646970;
+    padding: 4px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.eab-copy-shortcode:hover {
+    color: #007cba;
+    background: rgba(0, 124, 186, 0.1);
+}
+
+/* Main Content Layout */
+.eab-admin-content {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0;
+    flex: 1;
+}
+
+/* Settings Grid */
+.eab-settings-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 30px;
+    width: 100%;
+}
+
+.eab-settings-section {
+    background: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e0e0e0;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.eab-settings-section:nth-child(1) {
+    border-left: 4px solid #007cba;
+}
+
+.eab-settings-section:nth-child(2) {
+    border-left: 4px solid #d63638;
+}
+
+.eab-settings-section:nth-child(3) {
+    border-left: 4px solid #00a32a;
+}
+
+.eab-settings-section:nth-child(4) {
+    border-left: 4px solid #dba617;
+}
+
+.eab-settings-section:nth-child(5) {
+    border-left: 4px solid #8c8f94;
+}
+
+.eab-settings-section:nth-child(6) {
+    border-left: 4px solid #7c3aed;
+}
+
+.eab-settings-section:nth-child(7) {
+    border-left: 4px solid #9b59b6;
+}
+
+.eab-settings-section:nth-child(8) {
+    border-left: 4px solid #e67e22;
+}
+
+.eab-settings-section h3 {
+    color: #1d2327;
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0 0 25px 0;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #f0f0f1;
+}
+
+/* Form Fields */
+.eab-field-group {
+    margin-bottom: 25px;
+}
+
+.eab-field-group:last-child {
+    margin-bottom: 0;
+}
+
+.eab-field-group label {
+    display: block;
+    font-weight: 600;
+    color: #1d2327;
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.eab-field-group input[type="text"],
+.eab-field-group input[type="email"],
+.eab-field-group input[type="url"],
+.eab-field-group input[type="password"],
+.eab-field-group input[type="number"],
+.eab-field-group input[type="time"],
+.eab-field-group select {
+    width: 100%;
+    max-width: 400px;
+    padding: 12px 16px;
+    border: 1px solid #dcdcde;
+    border-radius: 6px;
+    font-size: 14px;
+    background: #fff;
+    transition: all 0.2s ease;
+}
+
+.eab-field-group input:focus,
+.eab-field-group select:focus {
+    outline: none;
+    border-color: #007cba;
+    box-shadow: 0 0 0 2px rgba(0, 124, 186, 0.1);
+}
+
+.eab-field-group .description {
+    color: #646970;
+    font-size: 13px;
+    margin-top: 8px;
+    line-height: 1.4;
+}
+
+/* Working Days Checkboxes */
+.eab-working-days {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 10px;
+    margin-top: 8px;
+}
+
+.eab-checkbox-label {
+    display: flex !important;
+    align-items: center;
+    font-weight: normal !important;
+    margin-bottom: 0 !important;
+    cursor: pointer;
+    padding: 8px 12px;
+    border: 1px solid #dcdcde;
+    border-radius: 6px;
+    background: #f9f9f9;
+    transition: all 0.2s ease;
+}
+
+.eab-checkbox-label:hover {
+    background: #f0f0f0;
+    border-color: #007cba;
+}
+
+.eab-checkbox-label input[type="checkbox"] {
+    margin-right: 8px;
+    margin-bottom: 0;
+    width: auto;
+    max-width: none;
+}
+
+.eab-checkbox-label input[type="checkbox"]:checked + span,
+.eab-checkbox-label:has(input[type="checkbox"]:checked) {
+    background: #e7f3ff;
+    border-color: #007cba;
+    color: #007cba;
+    font-weight: 600;
+}
+
+/* Color Picker */
+.eab-color-picker-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.eab-color-picker-wrapper input[type="color"] {
+    width: 50px;
+    height: 40px;
+    border: 1px solid #dcdcde;
+    border-radius: 6px;
+    cursor: pointer;
+    background: none;
+    padding: 0;
+}
+
+.eab-color-picker-wrapper input[type="text"] {
+    width: 120px;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+}
+
+/* Appointment Types */
+.eab-appointment-type-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+    transition: border-color 0.3s ease;
+}
+
+.eab-appointment-type-row.error {
+    border-color: #dc3232;
+    background: #ffeaea;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #dc3232;
+}
+
+.eab-appointment-type-row input[type="text"] {
+    width: 300px;
+    margin: 0;
+}
+
+.eab-appointment-type-row input[type="text"].error {
+    border-color: #dc3232;
+    box-shadow: 0 0 2px rgba(220, 50, 50, 0.3);
+}
+
+.eab-duration-select {
+    min-width: 80px;
+    margin: 0;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background: #fff;
+    font-size: 14px;
+}
+
+.eab-remove-type {
+    background: #dc3545;
+    color: #fff;
+    border: none;
+    padding: 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.eab-remove-type:hover {
+    background: #c82333;
+}
+
+.eab-remove-type .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+}
+
+#add-appointment-type {
+    margin-top: 15px;
+    background: #007cba;
+    color: #fff;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+#add-appointment-type:hover {
+    background: #005a87;
+}
+
+.eab-appointment-types-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-top: 15px;
+}
+
+.eab-appointment-types-actions .button {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.eab-appointment-types-actions .button .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+}
+
+.eab-appointment-types-actions .button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.eab-appointment-types-actions .button.loading .dashicons {
+    animation: spin 1s linear infinite;
+}
+
+/* CalDAV Test Button */
+#test-caldav-connection {
+    background: #6c757d;
+    color: #fff;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+#test-caldav-connection:hover {
+    background: #5a6268;
+}
+
+#caldav-test-result {
+    margin-top: 15px;
+    padding: 12px 16px;
+    border-radius: 6px;
+    font-weight: 500;
+    display: none;
+}
+
+#caldav-test-result.success {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+    display: block;
+}
+
+#caldav-test-result.error {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+    display: block;
+}
+
+/* Footer */
+.eab-admin-footer {
+    background: #fff;
+    padding: 25px 30px;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e0e0e0;
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+}
+
+.eab-admin-footer .button-primary {
+    background: #007cba;
+    border-color: #007cba;
+    color: #fff;
+    padding: 12px 24px;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+}
+
+.eab-admin-footer .button-primary:hover {
+    background: #005a87;
+    border-color: #005a87;
+}
+
+.eab-save-status {
+    font-weight: 500;
+    padding: 12px 20px;
+    border-radius: 6px;
+    display: none;
+    text-align: center;
+    margin: 0 auto;
+    font-size: 14px;
+}
+
+.eab-save-status.success {
+    background: #d4edda;
+    color: #155724;
+    display: block;
+    border: 1px solid #c3e6cb;
+}
+
+.eab-save-status.error {
+    background: #f8d7da;
+    color: #721c24;
+    display: block;
+    border: 1px solid #f5c6cb;
+}
+
+.eab-save-status.loading {
+    background: #e2f0ff;
+    color: #0c5460;
+    display: block;
+    border: 1px solid #bee5eb;
+}
+
+.eab-autosave-note {
+    color: #646970;
+    font-style: italic;
+    margin: 0;
+    text-align: center;
+    font-size: 14px;
+}
+
+/* Header save area (now empty) */
+.eab-save-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-left: auto;
+}
+
+/* Save button (now in footer) */
+#eab-save-all {
+    background: #007cba;
+    border-color: #007cba;
+    color: white;
+    padding: 12px 24px;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+#eab-save-all:hover {
+    background: #005a87;
+    border-color: #005a87;
+    color: white;
+}
+
+#eab-save-all .dashicons {
+    font-size: 18px;
+    line-height: 1;
+}
+
+/* Save notification */
+.eab-notification {
+    background: #d4edda;
+    border: 1px solid #c3e6cb;
+    color: #155724;
+    padding: 10px 15px;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    animation: slideIn 0.3s ease;
+}
+
+.eab-notification .dashicons {
+    font-size: 16px;
+    line-height: 1;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Sidebar */
+.eab-admin-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.eab-info-box {
+    background: #fff;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e0e0e0;
+}
+
+.eab-info-box h3 {
+    color: #1d2327;
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0 0 15px 0;
+}
+
+.eab-info-box ol {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.eab-info-box li {
+    margin-bottom: 8px;
+    color: #646970;
+    line-height: 1.4;
+}
+
+.eab-info-box p {
+    color: #646970;
+    line-height: 1.5;
+    margin: 0 0 15px 0;
+}
+
+.eab-info-box .button {
+    background: #007cba;
+    color: #fff;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    display: inline-block;
+}
+
+.eab-info-box .button:hover {
+    background: #005a87;
+    color: #fff;
+}
+
+/* Live Time Display */
+#eab-live-time {
+    font-family: 'Courier New', monospace;
+    font-weight: bold;
+    color: #007cba;
+    background: #f0f8ff;
+    padding: 4px 8px;
+    border-radius: 4px;
+    border: 1px solid #b3d9ff;
+    display: inline-block;
+    min-width: 160px;
+    text-align: center;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+#eab-live-time:hover {
+    background: #e6f3ff;
+    border-color: #007cba;
+    transform: scale(1.02);
+}
+
+/* Loading States */
+.eab-loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.eab-loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #007cba;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .eab-admin-content {
+        grid-template-columns: 1fr;
+    }
+    
+    .eab-admin-header {
+        flex-direction: column;
+        gap: 20px;
+    }
+    
+    .eab-shortcode-info {
+        text-align: left;
+    }
+}
+
+@media (max-width: 768px) {
+    .eab-admin-wrap {
+        margin: 10px;
+    }
+    
+    .eab-settings-section,
+    .eab-admin-header,
+    .eab-admin-footer,
+    .eab-info-box {
+        padding: 20px;
+    }
+    
+    .eab-appointment-type-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .eab-color-picker-wrapper {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .eab-admin-footer {
+        flex-direction: column;
+        gap: 15px;
+    }
+}
+
+/* CalDAV Calendar Preview */
+.eab-caldav-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    align-items: start;
+}
+
+.eab-caldav-settings {
+    min-width: 0;
+}
+
+.eab-calendar-preview {
+    background: #f8f9fa;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    min-height: 300px;
+}
+
+.eab-calendar-preview h4 {
+    margin: 0 0 15px 0;
+    color: #1d2327;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.eab-calendar-date {
+    text-align: center;
+    margin-bottom: 20px;
+    padding: 10px;
+    background: #fff;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+}
+
+.eab-date-display {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1d2327;
+}
+
+.eab-time-slots-preview {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 8px;
+    margin-bottom: 20px;
+    min-height: 120px;
+    position: relative;
+}
+
+/* Admin schedule preview styles */
+.eab-schedule-preview h4 {
+    margin: 0 0 15px 0;
+    color: #333;
+    font-size: 16px;
+}
+
+.eab-slots-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 8px;
+    margin-bottom: 15px;
+}
+
+.eab-time-slot {
+    padding: 8px 12px;
+    border-radius: 4px;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 500;
+    border: 1px solid;
+}
+
+.eab-slot-available {
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+    color: #155724;
+}
+
+.eab-slot-booked {
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+    color: #721c24;
+}
+
+/* CalDAV conflicts now use the same styling as booked slots */
+
+.eab-slot-past {
+    background-color: #f5f5f5;
+    border-color: #bdbdbd;
+    color: #757575;
+    opacity: 0.7;
+}
+
+.eab-slot-outside_hours {
+    background-color: #fffbf0;
+    border-color: #ffeaa7;
+    color: #856404;
+}
+
+.eab-time-slot small {
+    display: block;
+    font-size: 11px;
+    font-weight: normal;
+    opacity: 0.8;
+    margin-top: 2px;
+}
+
+.eab-schedule-preview p {
+    margin: 0;
+    font-size: 14px;
+    color: #666;
+}
+
+/* Legacy time slot styles */
+.eab-legacy-time-slot {
+    padding: 8px 4px;
+    text-align: center;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    border: 1px solid transparent;
+    transition: all 0.2s ease;
+}
+
+.eab-time-slot.eab-available {
+    background-color: #d4edda;
+    color: #155724;
+    border-color: #c3e6cb;
+}
+
+.eab-time-slot.eab-unavailable {
+    background-color: #f8d7da;
+    color: #721c24;
+    border-color: #f5c6cb;
+}
+
+.eab-loading {
+    text-align: center;
+    color: #646970;
+    font-style: italic;
+    padding: 40px 20px;
+}
+
+.eab-legend {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    padding-top: 15px;
+    border-top: 1px solid #ddd;
+}
+
+.eab-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: #646970;
+}
+
+.eab-legend-color {
+    width: 16px;
+    height: 16px;
+    border-radius: 3px;
+    border: 1px solid transparent;
+}
+
+.eab-legend-color.eab-slot-available {
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+}
+
+.eab-legend-color.eab-slot-past {
+    background-color: #f5f5f5;
+    border-color: #bdbdbd;
+    opacity: 0.7;
+}
+
+.eab-legend-color.eab-slot-booked {
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+}
+
+.eab-legend-color.eab-slot-outside_hours {
+    background-color: #fffbf0;
+    border-color: #ffeaa7;
+}
+
+/* Responsive design for calendar preview */
+@media (max-width: 1024px) {
+    .eab-caldav-container {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .eab-calendar-preview {
+        order: -1;
+    }
+}
+
+@media (max-width: 768px) {
+    .eab-time-slots-preview {
+        grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+        gap: 6px;
+    }
+    
+    .eab-time-slot {
+        padding: 6px 2px;
+        font-size: 11px;
+    }
+}
+
+/* Save All button styles */
+#eab-save-all {
+    background: #0073aa;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.5;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+#eab-save-all:hover {
+    background: #005a87;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+}
+
+#eab-save-all:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+#eab-save-all .dashicons {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+}
+
+/* Success state for save button */
+#eab-save-all.button-success {
+    background: #28a745;
+    color: white;
+    border-color: #28a745;
+}
+
+#eab-save-all.button-success:hover {
+    background: #218838;
+    border-color: #1e7e34;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+}
+
+/* Removed notification styles - now using button success state */
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    .eab-admin-wrap {
+        color: #f0f0f1;
+    }
+    
+    .eab-settings-section,
+    .eab-admin-header,
+    .eab-admin-footer,
+    .eab-info-box {
+        background: #1d2327;
+        border-color: #3c434a;
+    }
+    
+    .eab-field-group input,
+    .eab-field-group select {
+        background: #2c3338;
+        border-color: #3c434a;
+        color: #f0f0f1;
+    }
+    
+    .eab-shortcode-box {
+        background: #2c3338;
+        border-color: #3c434a;
+    }
+    
+    .eab-export-import-section {
+        background: #2c3338;
+        border-color: #3c434a;
+    }
+}
+
+/* Export/Import Section */
+.eab-export-import-section {
+    background: #fff;
+    padding: 20px 30px;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    border-left: 4px solid #00a32a;
+}
+
+.eab-export-import-buttons {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 10px;
+}
+
+.eab-export-import-buttons .button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.eab-export-import-buttons .button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.eab-export-import-buttons .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+}
+
+.eab-export-import-section .description {
+    color: #646970;
+    font-size: 13px;
+    margin: 0;
+    line-height: 1.4;
+}
+
+/* Floating Save Button */
+.eab-floating-save {
+    position: fixed;
+    top: 70px;
+    right: 30px;
+    z-index: 9999;
+    background: #007cba;
+    color: #fff;
+    border: none;
+    border-radius: 50px;
+    padding: 12px 24px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 124, 186, 0.3);
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.eab-floating-save:hover {
+    background: #005a87;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 124, 186, 0.4);
+}
+
+.eab-floating-save:active {
+    transform: translateY(0);
+}
+
+.eab-floating-save .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+}
+
+/* Hide original footer save button */
+.eab-admin-footer {
+    display: none;
+}
+
+/* Notice styles for import/export feedback */
+.notice.notice-success,
+.notice.notice-error,
+.notice.notice-info {
+    position: relative;
+    padding: 12px 16px;
+    margin: 15px 0;
+    border-radius: 4px;
+    border-left-width: 4px;
+    border-left-style: solid;
+}
+
+.notice.notice-success {
+    background-color: #f0f8f0;
+    border-left-color: #00a32a;
+    color: #155724;
+}
+
+.notice.notice-error {
+    background-color: #fdf2f2;
+    border-left-color: #dc3232;
+    color: #721c24;
+}
+
+.notice.notice-info {
+    background-color: #f0f6fc;
+    border-left-color: #007cba;
+    color: #0c4a6e;
+}
+
+.notice.is-dismissible {
+    padding-right: 38px;
+}
+
+.notice .notice-dismiss {
+    position: absolute;
+    top: 0;
+    right: 1px;
+    border: none;
+    margin: 0;
+    padding: 9px;
+    background: none;
+    color: inherit;
+    cursor: pointer;
+    opacity: 0.7;
+}
+
+.notice .notice-dismiss:hover {
+    opacity: 1;
+}
+
+.notice .notice-dismiss:before {
+    content: '\f153';
+    font-family: dashicons;
+    font-size: 16px;
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+    display: block;
+    text-align: center;
+}
+
+/* Dark mode support for admin interface */
+@media (prefers-color-scheme: dark) {
+    /* WordPress admin body and page backgrounds */
+    body.wp-admin,
+    #wpwrap,
+    #wpcontent,
+    #wpbody,
+    #wpbody-content,
+    .wrap {
+        background: #1d2327 !important;
+        color: #c3c4c7 !important;
+    }
+    
+    /* Admin menu */
+    #adminmenu,
+    #adminmenu .wp-submenu,
+    #adminmenuback,
+    #adminmenuwrap {
+        background: #23282d !important;
+    }
+    
+    /* Admin bar */
+    #wpadminbar {
+        background: #23282d !important;
+    }
+    
+    /* Main content area */
+    .wp-admin #wpbody-content {
+        background: #1d2327 !important;
+    }
+    
+    /* Main admin wrapper */
+    .eab-admin-wrap {
+        background: #1d2327 !important;
+        color: #c3c4c7;
+    }
+    
+    .eab-admin-wrap h1 {
+        color: #c3c4c7;
+    }
+    
+    /* Header section */
+    .eab-admin-header {
+        background: #1d2327;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+        border-left-color: #72aee6;
+    }
+    
+    .eab-logo h2 {
+        color: #c3c4c7;
+    }
+    
+    .eab-subtitle {
+        color: #a7aaad;
+    }
+    
+    .eab-shortcode-info h3,
+    .eab-quick-guide-info h3 {
+        color: #c3c4c7;
+    }
+    
+    .eab-quick-guide-info ol {
+        background: #2c3338;
+        border-color: #3c434a;
+    }
+    
+    .eab-quick-guide-info ol li {
+        color: #c3c4c7;
+    }
+    
+    /* Main content sections */
+    .eab-admin-content {
+        background: #1d2327;
+    }
+    
+    .eab-section {
+        background: #1d2327;
+        border-color: #3c434a;
+    }
+    
+    .eab-section h3 {
+        color: #c3c4c7;
+        border-color: #3c434a;
+    }
+    
+    .eab-section-content {
+        background: #2c3338;
+    }
+    
+    /* Form elements */
+    .eab-form-table th {
+        color: #c3c4c7;
+    }
+    
+    .eab-form-table td {
+        border-color: #3c434a;
+    }
+    
+    .eab-form-table input[type="text"],
+    .eab-form-table input[type="email"],
+    .eab-form-table input[type="password"],
+    .eab-form-table input[type="number"],
+    .eab-form-table input[type="url"],
+    .eab-form-table select,
+    .eab-form-table textarea {
+        background: #2c3338;
+        border-color: #3c434a;
+        color: #c3c4c7;
+    }
+    
+    .eab-form-table input:focus,
+    .eab-form-table select:focus,
+    .eab-form-table textarea:focus {
+        border-color: #5b9dd9;
+        box-shadow: 0 0 0 1px #5b9dd9;
+    }
+    
+    .eab-form-table .description {
+        color: #a7aaad;
+    }
+    
+    /* Buttons */
+    .button-primary {
+        background: #0073aa !important;
+        border-color: #0073aa !important;
+    }
+    
+    .button-primary:hover {
+        background: #005177 !important;
+        border-color: #005177 !important;
+    }
+    
+    .button-secondary {
+        background: #646970 !important;
+        border-color: #646970 !important;
+        color: #f0f0f1 !important;
+    }
+    
+    .button-secondary:hover {
+        background: #50575e !important;
+        border-color: #50575e !important;
+    }
+    
+    /* Tabs */
+    .eab-tabs {
+        border-color: #3c434a;
+    }
+    
+    .eab-tab {
+        background: #2c3338;
+        border-color: #3c434a;
+        color: #a7aaad;
+    }
+    
+    .eab-tab:hover {
+        background: #3c434a;
+        color: #c3c4c7;
+    }
+    
+    .eab-tab.active {
+        background: #1d2327;
+        color: #5b9dd9;
+        border-bottom-color: #1d2327;
+    }
+    
+    .eab-tab-content {
+        background: #1d2327;
+        border-color: #3c434a;
+    }
+    
+    /* Statistics cards */
+    .eab-stats-grid .eab-stat-card {
+        background: #2c3338;
+        border-color: #3c434a;
+    }
+    
+    .eab-stat-card h4 {
+        color: #c3c4c7;
+    }
+    
+    .eab-stat-card .eab-stat-number {
+        color: #5b9dd9;
+    }
+    
+    .eab-stat-card .eab-stat-label {
+        color: #a7aaad;
+    }
+    
+    /* Appointments table */
+    .eab-appointments-table {
+        background: #1d2327;
+        border-color: #3c434a;
+    }
+    
+    .eab-appointments-table th {
+        background: #2c3338;
+        color: #c3c4c7;
+        border-color: #3c434a;
+    }
+    
+    .eab-appointments-table td {
+        border-color: #3c434a;
+        color: #c3c4c7;
+    }
+    
+    .eab-appointments-table tr:nth-child(even) {
+        background: #2c3338;
+    }
+    
+    .eab-appointments-table tr:hover {
+        background: #3c434a;
+    }
+    
+    /* Status badges */
+    .eab-status-confirmed {
+        background: #00a32a;
+    }
+    
+    .eab-status-pending {
+        background: #dba617;
+    }
+    
+    .eab-status-cancelled {
+        background: #d63638;
+    }
+    
+    /* CalDAV test results */
+    .eab-caldav-test-result.success {
+        background: #1e4d2b;
+        border-color: #00a32a;
+        color: #68de7c;
+    }
+    
+    .eab-caldav-test-result.error {
+        background: #4a1e1e;
+        border-color: #d63638;
+        color: #ff6b6b;
+    }
+    
+    /* Export/Import sections */
+    .eab-export-import-section {
+        background: #2c3338;
+        border-color: #3c434a;
+    }
+    
+    .eab-export-import-section h4 {
+        color: #c3c4c7;
+    }
+    
+    .eab-export-import-section .description {
+        color: #a7aaad;
+    }
+    
+    /* Floating save button */
+    .eab-floating-save {
+        background: #0073aa;
+        box-shadow: 0 4px 12px rgba(0, 115, 170, 0.3);
+    }
+    
+    .eab-floating-save:hover {
+        background: #005177;
+        box-shadow: 0 6px 16px rgba(0, 115, 170, 0.4);
+    }
+    
+    /* Notices */
+    .notice.notice-success {
+        background-color: #1e4d2b;
+        border-left-color: #00a32a;
+        color: #68de7c;
+    }
+    
+    .notice.notice-error {
+        background-color: #4a1e1e;
+        border-left-color: #d63638;
+        color: #ff6b6b;
+    }
+    
+    .notice.notice-info {
+        background-color: #1e3a5f;
+        border-left-color: #72aee6;
+        color: #9ec8f2;
+    }
+    
+    .notice .notice-dismiss {
+        color: inherit;
+    }
+    
+    /* Additional text elements for better readability */
+    .eab-admin-wrap p,
+    .eab-admin-wrap span,
+    .eab-admin-wrap div,
+    .eab-admin-wrap label,
+    .eab-admin-wrap strong,
+    .eab-admin-wrap em,
+    .eab-admin-wrap li,
+    .eab-admin-wrap td {
+        color: #c3c4c7;
+    }
+    
+    .eab-admin-wrap h2,
+    .eab-admin-wrap h3,
+    .eab-admin-wrap h4,
+    .eab-admin-wrap h5,
+    .eab-admin-wrap h6 {
+        color: #c3c4c7;
+    }
+    
+    /* Ensure all input types have proper dark styling */
+    .eab-admin-wrap input[type="text"],
+    .eab-admin-wrap input[type="email"],
+    .eab-admin-wrap input[type="password"],
+    .eab-admin-wrap input[type="number"],
+    .eab-admin-wrap input[type="url"],
+    .eab-admin-wrap input[type="tel"],
+    .eab-admin-wrap input[type="search"],
+    .eab-admin-wrap input[type="date"],
+    .eab-admin-wrap input[type="time"],
+    .eab-admin-wrap input[type="datetime-local"],
+    .eab-admin-wrap select,
+    .eab-admin-wrap textarea {
+        background: #2c3338 !important;
+        border-color: #3c434a !important;
+        color: #c3c4c7 !important;
+    }
+    
+    .eab-admin-wrap input:focus,
+    .eab-admin-wrap select:focus,
+    .eab-admin-wrap textarea:focus {
+        background: #2c3338 !important;
+        border-color: #5b9dd9 !important;
+        box-shadow: 0 0 0 1px #5b9dd9 !important;
+        color: #c3c4c7 !important;
+    }
+    
+    /* WordPress admin form elements */
+    .eab-admin-wrap .form-table th,
+    .eab-admin-wrap .form-table td {
+        color: #c3c4c7;
+        border-color: #3c434a;
+    }
+    
+    .eab-admin-wrap .form-table input[type="text"],
+    .eab-admin-wrap .form-table input[type="email"],
+    .eab-admin-wrap .form-table input[type="password"],
+    .eab-admin-wrap .form-table input[type="number"],
+    .eab-admin-wrap .form-table input[type="url"],
+    .eab-admin-wrap .form-table select,
+    .eab-admin-wrap .form-table textarea {
+        background: #2c3338 !important;
+        border-color: #3c434a !important;
+        color: #c3c4c7 !important;
+    }
+    
+    /* Description and help text */
+    .eab-admin-wrap .description,
+    .eab-admin-wrap .help-text,
+    .eab-admin-wrap small {
+        color: #a7aaad !important;
+    }
+    
+    /* Links */
+    .eab-admin-wrap a {
+        color: #5b9dd9;
+    }
+    
+    .eab-admin-wrap a:hover {
+        color: #72aee6;
+    }
+    
+    /* Checkboxes and radio buttons */
+    .eab-admin-wrap input[type="checkbox"],
+    .eab-admin-wrap input[type="radio"] {
+        background: #2c3338 !important;
+        border-color: #3c434a !important;
+    }
+    
+    .eab-admin-wrap input[type="checkbox"]:checked,
+    .eab-admin-wrap input[type="radio"]:checked {
+        background: #5b9dd9 !important;
+        border-color: #5b9dd9 !important;
+    }
+    
+    /* WordPress metabox styling */
+    .eab-admin-wrap .postbox,
+    .eab-admin-wrap .meta-box-sortables {
+        background: #1d2327;
+        border-color: #3c434a;
+    }
+    
+    .eab-admin-wrap .postbox h3,
+    .eab-admin-wrap .postbox .hndle {
+        background: #2c3338;
+        color: #c3c4c7;
+        border-color: #3c434a;
+    }
+    
+    .eab-admin-wrap .inside {
+        background: #1d2327;
+        color: #c3c4c7;
+    }
+    
+    /* WordPress core admin elements */
+    .wp-admin .postbox,
+    .wp-admin .meta-box-sortables,
+    .wp-admin .stuffbox,
+    .wp-admin .form-table,
+    .wp-admin .widefat {
+        background: #1d2327 !important;
+        color: #c3c4c7 !important;
+    }
+    
+    .wp-admin .postbox h3,
+    .wp-admin .postbox .hndle,
+    .wp-admin .stuffbox h3,
+    .wp-admin .stuffbox .hndle {
+        background: #2c3338 !important;
+        color: #c3c4c7 !important;
+        border-color: #3c434a !important;
+    }
+    
+    .wp-admin .form-table th,
+    .wp-admin .form-table td,
+    .wp-admin .widefat th,
+    .wp-admin .widefat td {
+        background: #1d2327 !important;
+        color: #c3c4c7 !important;
+        border-color: #3c434a !important;
+    }
+    
+    .wp-admin .widefat thead th,
+    .wp-admin .widefat tfoot th {
+        background: #2c3338 !important;
+        color: #c3c4c7 !important;
+    }
+    
+    /* WordPress admin notices */
+    .wp-admin .notice,
+    .wp-admin .error,
+    .wp-admin .updated {
+        background: #2c3338 !important;
+        border-left-color: #72aee6 !important;
+        color: #c3c4c7 !important;
+    }
+    
+    /* WordPress admin form inputs */
+    .wp-admin input[type="text"],
+    .wp-admin input[type="email"],
+    .wp-admin input[type="password"],
+    .wp-admin input[type="number"],
+    .wp-admin input[type="url"],
+    .wp-admin input[type="search"],
+    .wp-admin select,
+    .wp-admin textarea {
+        background: #2c3338 !important;
+        border-color: #3c434a !important;
+        color: #c3c4c7 !important;
+    }
+    
+    .wp-admin input:focus,
+    .wp-admin select:focus,
+    .wp-admin textarea:focus {
+        background: #2c3338 !important;
+        border-color: #5b9dd9 !important;
+        box-shadow: 0 0 0 1px #5b9dd9 !important;
+        color: #c3c4c7 !important;
+    }
+    
+    /* WordPress admin headings */
+    .wp-admin h1,
+    .wp-admin h2,
+    .wp-admin h3,
+    .wp-admin h4,
+    .wp-admin h5,
+    .wp-admin h6 {
+        color: #c3c4c7 !important;
+    }
+    
+    /* WordPress admin paragraphs and text */
+    .wp-admin p,
+    .wp-admin span,
+    .wp-admin div,
+    .wp-admin label,
+    .wp-admin strong,
+    .wp-admin em {
+        color: #c3c4c7 !important;
+    }
+    
+    /* WordPress admin links */
+    .wp-admin a {
+        color: #5b9dd9 !important;
+    }
+    
+    .wp-admin a:hover {
+        color: #72aee6 !important;
+    }
+    
+    /* Additional comprehensive selectors for all admin elements */
+    body.wp-admin,
+    body.wp-admin * {
+        color: #c3c4c7 !important;
+    }
+    
+    /* Specific overrides for form elements */
+    body.wp-admin label,
+    body.wp-admin .eab-checkbox-label,
+    body.wp-admin .checkbox-label {
+        color: #c3c4c7 !important;
+    }
+    
+    /* Checkbox labels dark mode styling */
+    body.wp-admin .eab-checkbox-label {
+        background: #2c3338 !important;
+        border-color: #3c434a !important;
+    }
+    
+    body.wp-admin .eab-checkbox-label:hover {
+        background: #3c434a !important;
+        border-color: #5b9dd9 !important;
+    }
+    
+    body.wp-admin .eab-checkbox-label input[type="checkbox"]:checked + span,
+    body.wp-admin .eab-checkbox-label:has(input[type="checkbox"]:checked) {
+        background: #1e3a5f !important;
+        border-color: #5b9dd9 !important;
+        color: #72aee6 !important;
+    }
+    
+    /* Calendar preview and time slots */
+    body.wp-admin .eab-calendar-preview {
+        background: #2c3338 !important;
+        border-color: #3c434a !important;
+        color: #c3c4c7 !important;
+    }
+    
+    body.wp-admin .eab-calendar-preview *,
+    body.wp-admin .eab-time-slots-preview,
+    body.wp-admin .eab-time-slots-preview *,
+    body.wp-admin .eab-schedule-preview,
+    body.wp-admin .eab-schedule-preview * {
+        color: #c3c4c7 !important;
+    }
+    
+    body.wp-admin .eab-calendar-date {
+        background: #1d2327 !important;
+        border-color: #3c434a !important;
+    }
+    
+    body.wp-admin .eab-calendar-preview h4 {
+        color: #f0f0f1 !important;
+    }
+    
+    /* Legend items */
+    body.wp-admin .eab-legend,
+    body.wp-admin .eab-legend *,
+    body.wp-admin .eab-legend-item,
+    body.wp-admin .eab-legend-item * {
+        color: #c3c4c7 !important;
+    }
+    
+    /* Time slot elements */
+    body.wp-admin .eab-time-slot {
+        color: #c3c4c7 !important;
+    }
+    
+    /* Time slot colors - dark mode friendly */
+    body.wp-admin .eab-slot-available {
+        background-color: #1e4d3a !important;
+        border-color: #2d5a47 !important;
+        color: #7dd3a0 !important;
+    }
+    
+    body.wp-admin .eab-slot-booked {
+        background-color: #4a1e1e !important;
+        border-color: #5a2d2d !important;
+        color: #ff9999 !important;
+    }
+    
+    body.wp-admin .eab-slot-past {
+        background-color: #2a2a2a !important;
+        border-color: #3a3a3a !important;
+        color: #888888 !important;
+        opacity: 0.7 !important;
+    }
+    
+    body.wp-admin .eab-slot-outside_hours {
+        background-color: #3d3520 !important;
+        border-color: #4a4228 !important;
+        color: #d4b86a !important;
+    }
+    
+    /* Legend colors - dark mode friendly */
+    body.wp-admin .eab-legend-color.eab-slot-available {
+        background-color: #1e4d3a !important;
+        border-color: #2d5a47 !important;
+    }
+    
+    body.wp-admin .eab-legend-color.eab-slot-booked {
+        background-color: #4a1e1e !important;
+        border-color: #5a2d2d !important;
+    }
+    
+    body.wp-admin .eab-legend-color.eab-slot-past {
+        background-color: #2a2a2a !important;
+        border-color: #3a3a3a !important;
+        opacity: 0.7 !important;
+    }
+    
+    body.wp-admin .eab-legend-color.eab-slot-outside_hours {
+        background-color: #3d3520 !important;
+        border-color: #4a4228 !important;
+    }
+    
+    /* Date display */
+    body.wp-admin .eab-date-display,
+    body.wp-admin .eab-calendar-date,
+    body.wp-admin .eab-calendar-date * {
+        color: #c3c4c7 !important;
+    }
+    
+    /* All div elements in admin */
+    body.wp-admin div {
+        color: #c3c4c7 !important;
+    }
+    
+    /* Override any remaining white text */
+    body.wp-admin [style*="color: white"],
+    body.wp-admin [style*="color: #fff"],
+    body.wp-admin [style*="color: #ffffff"] {
+        color: #c3c4c7 !important;
+    }
+}

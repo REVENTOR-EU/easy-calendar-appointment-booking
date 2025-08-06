@@ -1,0 +1,928 @@
+/**
+ * Frontend styles for Easy Calendar Appointment Booking
+ */
+
+.eab-booking-form {
+    max-width: 800px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    position: relative;
+}
+
+/* Form Header */
+.eab-form-header {
+    background: linear-gradient(135deg, #007cba 0%, #005a87 100%);
+    color: #fff;
+    padding: 30px;
+    text-align: center;
+    position: relative;
+}
+
+.eab-form-header h3 {
+    margin: 0 0 20px 0;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.eab-progress-container {
+    background: rgba(255, 255, 255, 0.2);
+    height: 4px;
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.eab-progress-bar {
+    height: 100%;
+    background: #fff;
+    width: 25%;
+    border-radius: 2px;
+    transition: width 0.3s ease;
+}
+
+/* Steps Indicator */
+.eab-steps-indicator {
+    display: flex;
+    justify-content: space-between;
+    padding: 30px;
+    background: #f8f9fa;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.eab-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+    position: relative;
+}
+
+.eab-step:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    top: 15px;
+    right: -50%;
+    width: 100%;
+    height: 2px;
+    background: #e9ecef;
+    z-index: 1;
+}
+
+.eab-step.active:not(:last-child)::after,
+.eab-step.completed:not(:last-child)::after {
+    background: #007cba;
+}
+
+.eab-step-number {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: #e9ecef;
+    color: #6c757d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 8px;
+    position: relative;
+    z-index: 2;
+    transition: all 0.3s ease;
+}
+
+.eab-step.active .eab-step-number {
+    background: #007cba;
+    color: #fff;
+}
+
+.eab-step.completed .eab-step-number {
+    background: #28a745;
+    color: #fff;
+}
+
+.eab-step-label {
+    font-size: 12px;
+    color: #6c757d;
+    text-align: center;
+    font-weight: 500;
+}
+
+.eab-step.active .eab-step-label {
+    color: #007cba;
+    font-weight: 600;
+}
+
+/* Form Steps */
+.eab-form {
+    position: relative;
+}
+
+.eab-form-step {
+    display: none;
+    padding: 40px;
+    min-height: 400px;
+}
+
+.eab-form-step.active {
+    display: block;
+}
+
+.eab-step-content {
+    margin-bottom: 40px;
+}
+
+.eab-step-content h4 {
+    color: #1d2327;
+    font-size: 20px;
+    font-weight: 600;
+    margin: 0 0 25px 0;
+    text-align: center;
+}
+
+/* Service Selection */
+.eab-service-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.eab-service-option {
+    cursor: pointer;
+    display: block;
+}
+
+.eab-service-option input[type="radio"] {
+    display: none;
+}
+
+.eab-service-card {
+    background: #f8f9fa;
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    padding: 25px;
+    text-align: center;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.eab-service-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: #007cba;
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+.eab-service-option:hover .eab-service-card {
+    border-color: #007cba;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 124, 186, 0.15);
+}
+
+.eab-service-option input:checked + .eab-service-card {
+    border-color: #007cba;
+    background: rgba(0, 124, 186, 0.05);
+}
+
+.eab-service-option input:checked + .eab-service-card::before {
+    transform: scaleX(1);
+}
+
+.eab-service-icon {
+    font-size: 32px;
+    color: #007cba;
+    margin-bottom: 15px;
+}
+
+.eab-service-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1d2327;
+    margin-bottom: 8px;
+}
+
+.eab-service-duration {
+    font-size: 14px;
+    color: #6c757d;
+}
+
+/* Date & Time Selection */
+.eab-datetime-container {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 30px;
+    align-items: start;
+}
+
+.eab-date-selection,
+.eab-time-selection {
+    display: grid;
+    grid-template-rows: auto 1fr;
+    gap: 12px;
+}
+
+.eab-date-selection label,
+.eab-time-selection label {
+    font-weight: 600;
+    color: #1d2327;
+    font-size: 16px;
+    margin: 0;
+    padding: 0;
+}
+
+.eab-date-selection select {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    font-size: 14px;
+    background: #fff;
+    transition: all 0.3s ease;
+    height: 48px;
+    box-sizing: border-box;
+}
+
+.eab-date-selection select:focus {
+    outline: none;
+    border-color: #007cba;
+    box-shadow: 0 0 0 3px rgba(0, 124, 186, 0.1);
+}
+
+.eab-time-slots {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 12px;
+    align-content: start;
+    margin: 0;
+}
+
+.eab-time-slot {
+    background: #f8f9fa;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    padding: 12px 8px;
+    text-align: center;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    color: #1d2327;
+    height: 48px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.eab-time-slot:hover {
+    border-color: #007cba;
+    background: rgba(0, 124, 186, 0.05);
+    transform: translateY(-1px);
+}
+
+.eab-time-slot.selected {
+    background: #007cba;
+    border-color: #007cba;
+    color: #fff;
+}
+
+.eab-time-slot.unavailable {
+    background: #f8f9fa;
+    border-color: #e9ecef;
+    color: #6c757d;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.eab-no-date-selected {
+    grid-column: 1 / -1;
+    text-align: center;
+    color: #6c757d;
+    padding: 40px 20px;
+    font-size: 16px;
+}
+
+.eab-no-date-selected .dashicons {
+    font-size: 24px;
+    margin-bottom: 10px;
+    display: block;
+}
+
+.eab-loading-slots {
+    grid-column: 1 / -1;
+    text-align: center;
+    color: #6c757d;
+    padding: 40px 20px;
+    font-size: 16px;
+}
+
+/* Personal Information */
+.eab-form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.eab-form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.eab-form-group-full {
+    grid-column: 1 / -1;
+}
+
+.eab-form-group label {
+    font-weight: 600;
+    color: #1d2327;
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.eab-form-group .required {
+    color: #dc3545;
+}
+
+.eab-form-group input,
+.eab-form-group textarea {
+    padding: 12px 16px;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    font-family: inherit;
+}
+
+.eab-form-group input:focus,
+.eab-form-group textarea:focus {
+    outline: none;
+    border-color: #007cba;
+    box-shadow: 0 0 0 3px rgba(0, 124, 186, 0.1);
+}
+
+.eab-form-group textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+/* Confirmation */
+.eab-confirmation-details {
+    display: grid;
+    gap: 25px;
+}
+
+.eab-confirmation-card {
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    padding: 25px;
+}
+
+.eab-confirmation-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.eab-confirmation-header .dashicons {
+    font-size: 20px;
+    color: #007cba;
+}
+
+.eab-confirmation-header h5 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #1d2327;
+}
+
+.eab-confirmation-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #f0f0f1;
+}
+
+.eab-confirmation-row:last-child {
+    border-bottom: none;
+}
+
+.eab-confirmation-row strong {
+    color: #1d2327;
+    font-weight: 600;
+}
+
+.eab-confirmation-row span {
+    color: #6c757d;
+    text-align: right;
+}
+
+/* Navigation Buttons */
+.eab-step-navigation {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 20px;
+    border-top: 1px solid #e9ecef;
+}
+
+/* First step navigation - align Next button to the right */
+#step-1 .eab-step-navigation {
+    justify-content: flex-end;
+}
+
+.eab-btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    min-width: 120px;
+    justify-content: center;
+}
+
+.eab-btn-primary {
+    background: #007cba;
+    color: #fff;
+}
+
+.eab-btn-primary:hover:not(:disabled) {
+    background: #005a87;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 124, 186, 0.3);
+}
+
+.eab-btn-secondary {
+    background: #6c757d;
+    color: #fff;
+}
+
+.eab-btn-secondary:hover {
+    background: #5a6268;
+    transform: translateY(-1px);
+}
+
+.eab-btn:disabled {
+    background: #e9ecef;
+    color: #6c757d;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* Success State */
+.eab-success-content {
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.eab-success-icon {
+    font-size: 64px;
+    color: #28a745;
+    margin-bottom: 20px;
+}
+
+.eab-success-content h4 {
+    color: #28a745;
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 15px;
+}
+
+.eab-success-content p {
+    color: #6c757d;
+    font-size: 16px;
+    line-height: 1.5;
+    margin-bottom: 30px;
+}
+
+/* Loading Overlay */
+.eab-loading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.95);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.eab-loading-spinner {
+    text-align: center;
+}
+
+.eab-spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #007cba;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 20px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.eab-loading-spinner p {
+    color: #6c757d;
+    font-weight: 500;
+    margin: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .eab-booking-form {
+        margin: 10px;
+        border-radius: 8px;
+    }
+    
+    .eab-form-header {
+        padding: 20px;
+    }
+    
+    .eab-form-header h3 {
+        font-size: 20px;
+    }
+    
+    .eab-steps-indicator {
+        padding: 20px 15px;
+    }
+    
+    .eab-step-label {
+        font-size: 10px;
+    }
+    
+    .eab-form-step {
+        padding: 20px;
+        min-height: 300px;
+    }
+    
+    .eab-service-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .eab-datetime-container {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .eab-form-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .eab-time-slots {
+        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    }
+    
+    .eab-step-navigation {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .eab-btn {
+        width: 100%;
+    }
+    
+    .eab-confirmation-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+    
+    .eab-confirmation-row span {
+        text-align: left;
+    }
+}
+
+@media (max-width: 480px) {
+    .eab-steps-indicator {
+        padding: 15px 10px;
+    }
+    
+    .eab-step-number {
+        width: 25px;
+        height: 25px;
+        font-size: 12px;
+    }
+    
+    .eab-step-label {
+        font-size: 9px;
+    }
+    
+    .eab-form-step {
+        padding: 15px;
+    }
+    
+    .eab-service-card {
+        padding: 20px;
+    }
+    
+    .eab-confirmation-card {
+        padding: 20px;
+    }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    /* Main container */
+    .eab-booking-form {
+        background: #1d2327;
+        color: #f0f0f1;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+    
+    /* Form header - keep gradient but adjust for dark mode */
+    .eab-form-header {
+        background: linear-gradient(135deg, #0073aa 0%, #004a6b 100%);
+    }
+    
+    /* Steps indicator */
+    .eab-steps-indicator {
+        background: #2c3338;
+        border-color: #3c434a;
+    }
+    
+    .eab-step:not(:last-child)::after {
+        background: #3c434a;
+    }
+    
+    .eab-step.active:not(:last-child)::after,
+    .eab-step.completed:not(:last-child)::after {
+        background: #0073aa;
+    }
+    
+    .eab-step-number {
+        background: #3c434a;
+        color: #a7aaad;
+    }
+    
+    .eab-step.active .eab-step-number {
+        background: #0073aa;
+        color: #fff;
+    }
+    
+    .eab-step.completed .eab-step-number {
+        background: #00a32a;
+        color: #fff;
+    }
+    
+    .eab-step-label {
+        color: #a7aaad;
+    }
+    
+    .eab-step.active .eab-step-label {
+        color: #72aee6;
+    }
+    
+    /* Step content headings */
+    .eab-step-content h4 {
+        color: #f0f0f1;
+    }
+    
+    /* Service cards */
+    .eab-service-card {
+        background: #2c3338;
+        border-color: #3c434a;
+    }
+    
+    .eab-service-option:hover .eab-service-card {
+        border-color: #72aee6;
+        box-shadow: 0 8px 25px rgba(114, 174, 230, 0.15);
+    }
+    
+    .eab-service-option input:checked + .eab-service-card {
+        border-color: #72aee6;
+        background: rgba(114, 174, 230, 0.1);
+    }
+    
+    .eab-service-card::before {
+        background: #72aee6;
+    }
+    
+    .eab-service-icon {
+        color: #72aee6;
+    }
+    
+    .eab-service-name {
+        color: #f0f0f1;
+    }
+    
+    .eab-service-duration {
+        color: #a7aaad;
+    }
+    
+    /* Form inputs */
+    .eab-date-selection label,
+    .eab-time-selection label,
+    .eab-form-group label {
+        color: #f0f0f1;
+    }
+    
+    .eab-form-group input,
+    .eab-form-group textarea,
+    .eab-date-selection select {
+        background: #2c3338;
+        border-color: #3c434a;
+        color: #f0f0f1;
+    }
+    
+    .eab-form-group input:focus,
+    .eab-form-group textarea:focus,
+    .eab-date-selection select:focus {
+        border-color: #72aee6;
+        box-shadow: 0 0 0 3px rgba(114, 174, 230, 0.1);
+    }
+    
+    /* Time slots */
+    .eab-time-slot {
+        background: #2c3338;
+        border-color: #3c434a;
+        color: #f0f0f1;
+    }
+    
+    .eab-time-slot:hover {
+        border-color: #72aee6;
+        background: rgba(114, 174, 230, 0.1);
+    }
+    
+    .eab-time-slot.selected {
+        background: #0073aa;
+        border-color: #0073aa;
+        color: #fff;
+    }
+    
+    .eab-time-slot.unavailable {
+        background: #2c3338;
+        border-color: #3c434a;
+        color: #646970;
+    }
+    
+    /* No date selected and loading states */
+    .eab-no-date-selected,
+    .eab-loading-slots {
+        color: #a7aaad;
+    }
+    
+    /* Confirmation cards */
+    .eab-confirmation-card {
+        background: #2c3338;
+        border-color: #3c434a;
+    }
+    
+    .eab-confirmation-header {
+        border-color: #3c434a;
+    }
+    
+    .eab-confirmation-header .dashicons {
+        color: #72aee6;
+    }
+    
+    .eab-confirmation-header h5 {
+        color: #f0f0f1;
+    }
+    
+    .eab-confirmation-row {
+        border-color: #3c434a;
+    }
+    
+    .eab-confirmation-row strong {
+        color: #f0f0f1;
+    }
+    
+    .eab-confirmation-row span {
+        color: #a7aaad;
+    }
+    
+    /* Navigation */
+    .eab-step-navigation {
+        border-color: #3c434a;
+    }
+    
+    /* Buttons */
+    .eab-btn-primary {
+        background: #0073aa;
+    }
+    
+    .eab-btn-primary:hover:not(:disabled) {
+        background: #005177;
+        box-shadow: 0 4px 12px rgba(0, 115, 170, 0.3);
+    }
+    
+    .eab-btn-secondary {
+        background: #646970;
+    }
+    
+    .eab-btn-secondary:hover {
+        background: #50575e;
+    }
+    
+    .eab-btn:disabled {
+        background: #3c434a;
+        color: #646970;
+    }
+    
+    /* Success state */
+    .eab-success-icon {
+        color: #00a32a;
+    }
+    
+    .eab-success-content h4 {
+        color: #00a32a;
+    }
+    
+    .eab-success-content p {
+        color: #a7aaad;
+    }
+    
+    /* Loading overlay */
+    .eab-loading-overlay {
+        background: rgba(29, 35, 39, 0.95);
+    }
+    
+    .eab-spinner {
+        border-color: #3c434a;
+        border-top-color: #72aee6;
+    }
+    
+    .eab-loading-spinner p {
+        color: #a7aaad;
+    }
+    
+    /* Branding */
+    .eab-branding {
+        background: #2c3338 !important;
+        border-top-color: #3c434a !important;
+    }
+    
+    .eab-branding p {
+        color: #a7aaad !important;
+    }
+    
+    /* Branding link colors are now handled dynamically via PHP */
+}
+
+/* Branding */
+.eab-branding {
+    text-align: center;
+    padding: 20px;
+    background: #f8f9fa;
+    border-top: 1px solid #e9ecef;
+    margin-top: 0;
+}
+
+.eab-branding p {
+    margin: 0;
+    font-size: 13px;
+    color: #6c757d;
+    line-height: 1.4;
+}
+
+.eab-branding-link {
+    color: #007cba;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.eab-branding-link:hover {
+    color: #005a87;
+    text-decoration: none;
+    transform: translateY(-1px);
+}
+
+.eab-branding-link:hover::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #007cba, #005a87);
+    border-radius: 1px;
+}

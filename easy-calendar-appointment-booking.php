@@ -9,6 +9,7 @@
  * License: GPL v2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain: easy-calendar-appointment-booking
+ * Domain Path: /languages
  * Requires at least: 6.3
  * Tested up to: 6.8.2
  * Requires PHP: 8.1
@@ -150,7 +151,8 @@ class EasyAppointmentBooking {
     
     public function load_textdomain() {
         // WordPress automatically loads translations for plugins hosted on WordPress.org
-        // No manual load_plugin_textdomain() call needed since WordPress 4.6
+        // since WordPress 4.6 using just-in-time loading. No manual load_plugin_textdomain() call needed.
+        // The Text Domain header in the plugin file is sufficient for WordPress to locate translations.
     }
     
     public function activation_notice() {

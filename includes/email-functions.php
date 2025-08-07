@@ -9,6 +9,20 @@ if (!defined('ABSPATH')) {
 }
 
 /**
+ * Generate a random Jitsi Meet room ID
+ *
+ * @return string A random 10-character alphanumeric string
+ */
+function eab_generate_jitsi_room_id() {
+    $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    $room_id = '';
+    for ($i = 0; $i < 10; $i++) {
+        $room_id .= $characters[wp_rand(0, strlen($characters) - 1)];
+    }
+    return $room_id;
+}
+
+/**
  * Send appointment confirmation email with ICS attachment
  *
  * @param int $appointment_id The appointment ID
@@ -29,15 +43,16 @@ function eab_send_appointment_confirmation_email($appointment_id, $appointment_d
     $formatted_date = eab_format_date($appointment_data['appointment_date']);
     $formatted_time = eab_format_time($appointment_data['appointment_time']);
     
+    // Use the Jitsi Meet URL that was already generated and passed in appointment data
+    // No need to generate a new one here - it should be consistent across all components
+    
     // Set email subject and heading based on whether this is a new booking or an update
     if ($is_update) {
-        // translators: %s is the site name
-        $subject = sprintf(__('Your appointment with %s has been updated', 'easy-calendar-appointment-booking'), $site_name);
+        $subject = __('Your appointment has been updated', 'easy-calendar-appointment-booking');
         $heading = __('Appointment Update', 'easy-calendar-appointment-booking');
         $intro_text = __('Your appointment has been updated with the following details:', 'easy-calendar-appointment-booking');
     } else {
-        // translators: %s is the site name
-        $subject = sprintf(__('Your appointment with %s has been confirmed', 'easy-calendar-appointment-booking'), $site_name);
+        $subject = __('Your appointment has been confirmed', 'easy-calendar-appointment-booking');
         $heading = __('Appointment Confirmation', 'easy-calendar-appointment-booking');
         $intro_text = __('Your appointment has been confirmed with the following details:', 'easy-calendar-appointment-booking');
     }
@@ -52,13 +67,16 @@ function eab_send_appointment_confirmation_email($appointment_id, $appointment_d
     $body .= "<p>" . sprintf(__('Dear %s,', 'easy-calendar-appointment-booking'), esc_html($appointment_data['name'])) . "</p>";
     $body .= "<p>" . $intro_text . "</p>";
     $body .= "<div style='background-color: #f8f8f8; padding: 15px; margin: 15px 0; border-left: 4px solid " . get_option('eab_theme_color', '#007cba') . ";'>";
-    $body .= "<p><strong>Appointment details:</strong></p>";
+    $body .= "<p><strong>" . __('Appointment details:', 'easy-calendar-appointment-booking') . "</strong></p>";
     $body .= "<p><strong>" . __('Service:', 'easy-calendar-appointment-booking') . "</strong> " . esc_html($appointment_data['appointment_type']) . "</p>";
     $body .= "<p><strong>" . __('Date:', 'easy-calendar-appointment-booking') . "</strong> " . esc_html($formatted_date) . "</p>";
     $body .= "<p><strong>" . __('Time:', 'easy-calendar-appointment-booking') . "</strong> " . esc_html(gmdate('H:i', strtotime($appointment_data['appointment_time']))) . "</p>";
     $duration_minutes = isset($appointment_data['appointment_duration']) ? $appointment_data['appointment_duration'] : get_option('eab_timeslot_duration', 30);
     $body .= "<p><strong>" . __('Duration:', 'easy-calendar-appointment-booking') . "</strong> " . $duration_minutes . " " . __('minutes', 'easy-calendar-appointment-booking') . "</p>";
     $body .= "<p><strong>" . __('Name:', 'easy-calendar-appointment-booking') . "</strong> " . esc_html($appointment_data['name']) . "</p>";
+    if (!empty($appointment_data['jitsi_url'])) {
+        $body .= "<p><strong>" . __('Video Meeting:', 'easy-calendar-appointment-booking') . "</strong> <a href='" . esc_url($appointment_data['jitsi_url']) . "' target='_blank'>" . esc_html($appointment_data['jitsi_url']) . "</a></p>";
+    }
     if (!empty($appointment_data['notes'])) {
         $body .= "<p><strong>" . __('Notes:', 'easy-calendar-appointment-booking') . "</strong> " . esc_html($appointment_data['notes']) . "</p>";
     }
@@ -140,19 +158,42 @@ function eab_generate_ics_file($appointment_data) {
     $site_name = get_bloginfo('name');
     $site_url = get_bloginfo('url');
     
+    // Use user's timezone if available, otherwise fall back to site timezone
+    $user_timezone = isset($appointment_data['user_timezone']) ? $appointment_data['user_timezone'] : null;
+    $timezone_string = $user_timezone ? $user_timezone : eab_get_timezone_string();
+    
     // Format date and time for ICS
     $appointment_date = $appointment_data['appointment_date'];
     $appointment_time = $appointment_data['appointment_time'];
     
-    // Calculate start and end times
-    $start_datetime = new DateTime($appointment_date . ' ' . $appointment_time);
+    // Calculate start and end times using the user's timezone
     $duration_minutes = isset($appointment_data['appointment_duration']) ? $appointment_data['appointment_duration'] : get_option('eab_timeslot_duration', 30);
-    $end_datetime = clone $start_datetime;
-    $end_datetime->add(new DateInterval('PT' . $duration_minutes . 'M'));
     
-    // Format times for ICS
-    $start_time_utc = gmdate('Ymd\THis\Z', $start_datetime->getTimestamp());
-    $end_time_utc = gmdate('Ymd\THis\Z', $end_datetime->getTimestamp());
+    try {
+        // Create timezone object
+        $timezone = new DateTimeZone($timezone_string);
+        
+        // Create datetime objects in the user's timezone
+        $start_datetime = new DateTime($appointment_date . ' ' . $appointment_time, $timezone);
+        $end_datetime = clone $start_datetime;
+        $end_datetime->add(new DateInterval('PT' . $duration_minutes . 'M'));
+        
+        // Format times for ICS with timezone information
+        $start_time_ics = $start_datetime->format('Ymd\THis');
+        $end_time_ics = $end_datetime->format('Ymd\THis');
+        $use_timezone = true;
+    } catch (Exception $e) {
+        // Fallback to UTC if timezone fails
+        $utc_timezone = new DateTimeZone('UTC');
+        $start_datetime = new DateTime($appointment_date . ' ' . $appointment_time, $utc_timezone);
+        $end_datetime = clone $start_datetime;
+        $end_datetime->add(new DateInterval('PT' . $duration_minutes . 'M'));
+        
+        $start_time_ics = $start_datetime->format('Ymd\THis\Z');
+        $end_time_ics = $end_datetime->format('Ymd\THis\Z');
+        $timezone_string = 'UTC';
+        $use_timezone = false;
+    }
     
     // Create unique identifier
     $uid = 'eab-' . md5($appointment_data['appointment_date'] . $appointment_data['appointment_time'] . $appointment_data['appointment_type']);
@@ -165,30 +206,51 @@ function eab_generate_ics_file($appointment_data) {
     
     // Build summary and description
     $summary = $site_name . ' - ' . $appointment_type_name . ' - ' . $duration_minutes . ' min';
-    $description = "Appointment details:\n";
+    $description = __('Appointment details:', 'easy-calendar-appointment-booking') . "\n";
     $description .= "Service: " . $appointment_type_name . "\n";
     $description .= "Date: " . eab_format_date($appointment_data['appointment_date']) . "\n";
-    $description .= "Time: " . gmdate('H:i', strtotime($appointment_data['appointment_time'])) . "\n";
+    $description .= "Time: " . $appointment_data['appointment_time'] . "\n";
     $description .= "Duration: " . $duration_minutes . " minutes\n";
     $description .= "Name: " . $appointment_data['name'] . "\n";
+    $phone = !empty($appointment_data['phone']) ? $appointment_data['phone'] : '---';
+    $description .= "Phone: " . $phone . "\n";
+    if (!empty($appointment_data['jitsi_url'])) {
+        $description .= "Video Meeting: " . $appointment_data['jitsi_url'] . "\n";
+    }
     if (!empty($appointment_data['notes'])) {
         $description .= "Notes: " . $appointment_data['notes'] . "\n";
     }
     
-    // Build ICS content
+    // Build ICS content with timezone support
     $ics_content = "BEGIN:VCALENDAR\r\n";
     $ics_content .= "VERSION:2.0\r\n";
     $ics_content .= "PRODID:-//" . $site_name . "//Easy Calendar Appointment Booking//EN\r\n";
     $ics_content .= "CALSCALE:GREGORIAN\r\n";
     $ics_content .= "METHOD:PUBLISH\r\n";
+    
+    // Add VTIMEZONE component if using a specific timezone
+    if (isset($use_timezone) && $use_timezone && $timezone_string !== 'UTC') {
+        $ics_content .= eab_generate_vtimezone($timezone_string);
+        $dtstart_value = "DTSTART;TZID=" . $timezone_string . ":" . $start_time_ics;
+        $dtend_value = "DTEND;TZID=" . $timezone_string . ":" . $end_time_ics;
+    } else {
+        // Use UTC format for fallback
+        $dtstart_value = "DTSTART:" . $start_time_ics;
+        $dtend_value = "DTEND:" . $end_time_ics;
+    }
+    
     $ics_content .= "BEGIN:VEVENT\r\n";
     $ics_content .= "UID:" . $uid . "@" . wp_parse_url($site_url, PHP_URL_HOST) . "\r\n";
     $ics_content .= "DTSTAMP:" . $timestamp . "\r\n";
-    $ics_content .= "DTSTART:" . $start_time_utc . "\r\n";
-    $ics_content .= "DTEND:" . $end_time_utc . "\r\n";
+    $ics_content .= $dtstart_value . "\r\n";
+    $ics_content .= $dtend_value . "\r\n";
     $ics_content .= "SUMMARY:" . eab_ical_escape($summary) . "\r\n";
     $ics_content .= "DESCRIPTION:" . eab_ical_escape($description) . "\r\n";
-    $ics_content .= "LOCATION:" . eab_ical_escape("Online Meeting") . "\r\n";
+    $location = !empty($appointment_data['jitsi_url']) ? $appointment_data['jitsi_url'] : "Online Meeting";
+    $ics_content .= "LOCATION:" . eab_ical_escape($location) . "\r\n";
+    if (!empty($appointment_data['jitsi_url'])) {
+        $ics_content .= "URL:" . eab_ical_escape($appointment_data['jitsi_url']) . "\r\n";
+    }
     $ics_content .= "STATUS:CONFIRMED\r\n";
     $ics_content .= "END:VEVENT\r\n";
     $ics_content .= "END:VCALENDAR\r\n";
@@ -208,4 +270,86 @@ function eab_ical_escape($text) {
     $text = str_replace(",", "\\,", $text);
     $text = str_replace(";", "\\;", $text);
     return $text;
+}
+
+/**
+ * Generate VTIMEZONE component for ICS file
+ *
+ * @param string $timezone_string The timezone identifier
+ * @return string The VTIMEZONE component
+ */
+function eab_generate_vtimezone($timezone_string) {
+    // For simplicity, we'll generate a basic VTIMEZONE component
+    // This covers most common timezones but may not handle all DST transitions perfectly
+    
+    try {
+        $timezone = new DateTimeZone($timezone_string);
+        $now = new DateTime('now', $timezone);
+        $transitions = $timezone->getTransitions($now->getTimestamp(), $now->getTimestamp() + (365 * 24 * 3600));
+        
+        $vtimezone = "BEGIN:VTIMEZONE\r\n";
+        $vtimezone .= "TZID:" . $timezone_string . "\r\n";
+        
+        if (!empty($transitions) && count($transitions) > 1) {
+            // Handle DST transitions
+            $std_transition = null;
+            $dst_transition = null;
+            
+            foreach ($transitions as $transition) {
+                if ($transition['isdst']) {
+                    $dst_transition = $transition;
+                } else {
+                    $std_transition = $transition;
+                }
+            }
+            
+            // Add STANDARD time
+            if ($std_transition) {
+                $vtimezone .= "BEGIN:STANDARD\r\n";
+                $vtimezone .= "DTSTART:" . gmdate('Ymd\THis', $std_transition['ts']) . "\r\n";
+                $vtimezone .= "TZOFFSETFROM:" . eab_format_timezone_offset($dst_transition ? $dst_transition['offset'] : $std_transition['offset']) . "\r\n";
+                $vtimezone .= "TZOFFSETTO:" . eab_format_timezone_offset($std_transition['offset']) . "\r\n";
+                $vtimezone .= "TZNAME:" . $std_transition['abbr'] . "\r\n";
+                $vtimezone .= "END:STANDARD\r\n";
+            }
+            
+            // Add DAYLIGHT time
+            if ($dst_transition) {
+                $vtimezone .= "BEGIN:DAYLIGHT\r\n";
+                $vtimezone .= "DTSTART:" . gmdate('Ymd\THis', $dst_transition['ts']) . "\r\n";
+                $vtimezone .= "TZOFFSETFROM:" . eab_format_timezone_offset($std_transition ? $std_transition['offset'] : $dst_transition['offset']) . "\r\n";
+                $vtimezone .= "TZOFFSETTO:" . eab_format_timezone_offset($dst_transition['offset']) . "\r\n";
+                $vtimezone .= "TZNAME:" . $dst_transition['abbr'] . "\r\n";
+                $vtimezone .= "END:DAYLIGHT\r\n";
+            }
+        } else {
+            // No DST, just standard time
+            $offset = $timezone->getOffset($now);
+            $vtimezone .= "BEGIN:STANDARD\r\n";
+            $vtimezone .= "DTSTART:19700101T000000\r\n";
+            $vtimezone .= "TZOFFSETFROM:" . eab_format_timezone_offset($offset) . "\r\n";
+            $vtimezone .= "TZOFFSETTO:" . eab_format_timezone_offset($offset) . "\r\n";
+            $vtimezone .= "END:STANDARD\r\n";
+        }
+        
+        $vtimezone .= "END:VTIMEZONE\r\n";
+        
+        return $vtimezone;
+    } catch (Exception $e) {
+        // Fallback: return empty string if timezone generation fails
+        return '';
+    }
+}
+
+/**
+ * Format timezone offset for ICS format
+ *
+ * @param int $offset_seconds The offset in seconds
+ * @return string The formatted offset (e.g., +0200, -0500)
+ */
+function eab_format_timezone_offset($offset_seconds) {
+    $hours = intval($offset_seconds / 3600);
+    $minutes = abs(($offset_seconds % 3600) / 60);
+    
+    return sprintf('%+03d%02d', $hours, $minutes);
 }

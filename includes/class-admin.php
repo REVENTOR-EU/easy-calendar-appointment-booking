@@ -21,6 +21,7 @@ class EAB_Admin {
         add_action('wp_ajax_nopriv_eab_test_caldav_conflicts', [$this, 'test_caldav_conflicts']);
         add_action('wp_ajax_eab_export_settings', [$this, 'export_settings_ajax']);
         add_action('wp_ajax_eab_import_settings', [$this, 'import_settings_ajax']);
+
     }
     
     public function add_admin_menu(): void {
@@ -620,5 +621,7 @@ class EAB_Admin {
         // Return default if invalid
         return 'UTC';
     }
+
+
 
 }

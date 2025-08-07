@@ -22,7 +22,7 @@ class EAB_Frontend {
     
     public function enqueue_frontend_scripts(): void {
         if ($this->has_booking_shortcode()) {
-            wp_enqueue_style('eab-frontend-style', EAB_PLUGIN_URL . 'assets/css/frontend.css', [], EAB_VERSION);
+            wp_enqueue_style('eab-frontend-style', EAB_PLUGIN_URL . 'assets/css/frontend.css', ['dashicons'], EAB_VERSION);
             wp_enqueue_script('eab-frontend-script', EAB_PLUGIN_URL . 'assets/js/frontend.js', ['jquery'], EAB_VERSION, true);
             
             $theme_color = get_option('eab_theme_color', '#007cba');
@@ -249,6 +249,15 @@ class EAB_Frontend {
         try {
             $date = isset($_POST['date']) ? sanitize_text_field(wp_unslash($_POST['date'])) : '';
             $appointment_type = isset($_POST['appointment_type']) ? sanitize_text_field(wp_unslash($_POST['appointment_type'])) : '';
+            
+            // Get user timezone information
+            $user_timezone = isset($_POST['user_timezone']) ? sanitize_text_field(wp_unslash($_POST['user_timezone'])) : null;
+            $user_timezone_offset = isset($_POST['user_timezone_offset']) ? intval(wp_unslash($_POST['user_timezone_offset'])) : null;
+            
+            // Debug log user timezone information
+            $this->debug_log("=== User Timezone Information ===");
+            $this->debug_log("User timezone: " . ($user_timezone ?: 'not provided'));
+            $this->debug_log("User timezone offset: " . ($user_timezone_offset !== null ? $user_timezone_offset : 'not provided'));
         
         // Get duration from appointment type or use default
         $timeslot_duration = get_option('eab_timeslot_duration', 30);
@@ -280,7 +289,7 @@ class EAB_Frontend {
             return;
         }
         
-        $all_slots = $this->generate_time_slots($date, $timeslot_duration, $is_admin_preview);
+        $all_slots = $this->generate_time_slots($date, $timeslot_duration, $is_admin_preview, $user_timezone, $user_timezone_offset);
         
         // Get booked slots and CalDAV conflicts
         $booked_slots = $this->get_booked_slots($date);
@@ -380,17 +389,29 @@ class EAB_Frontend {
         }
     }
     
-    private function generate_time_slots(string $date, int $duration, bool $is_admin_preview = false): array {
+    private function generate_time_slots(string $date, int $duration, bool $is_admin_preview = false, ?string $user_timezone = null, ?int $user_timezone_offset = null): array {
         $slots = [];
         $working_hours_start = get_option('eab_working_hours_start', '09:00');
         $working_hours_end = get_option('eab_working_hours_end', '17:00');
         
-        // Get timezone setting using the plugin's timezone function
+        // Get server timezone setting using the plugin's timezone function
         try {
             $timezone_string = $this->get_timezone_string();
-            $timezone = new DateTimeZone($timezone_string);
+            $server_timezone = new DateTimeZone($timezone_string);
         } catch (Exception $e) {
-            $timezone = new DateTimeZone('UTC');
+            $server_timezone = new DateTimeZone('UTC');
+        }
+        
+        // Determine display timezone (user's timezone if available, otherwise server timezone)
+        $display_timezone = $server_timezone;
+        if ($user_timezone && !$is_admin_preview) {
+            try {
+                $display_timezone = new DateTimeZone($user_timezone);
+                $this->debug_log("Using user timezone for display: " . $user_timezone);
+            } catch (Exception $e) {
+                $this->debug_log("Invalid user timezone '{$user_timezone}', falling back to server timezone");
+                $display_timezone = $server_timezone;
+            }
         }
         
         // For admin preview, generate all slots regardless of time
@@ -398,15 +419,8 @@ class EAB_Frontend {
         
         if ($is_admin_preview) {
             // For admin preview, generate slots within working hours but show all statuses
-            try {
-                $timezone_string = $this->get_timezone_string();
-                $timezone = new DateTimeZone($timezone_string);
-            } catch (Exception $e) {
-                $timezone = new DateTimeZone('UTC');
-            }
-            
-            $start_datetime = new DateTime($date . ' ' . $working_hours_start . ':00', $timezone);
-            $end_datetime = new DateTime($date . ' ' . $working_hours_end . ':00', $timezone);
+            $start_datetime = new DateTime($date . ' ' . $working_hours_start . ':00', $server_timezone);
+            $end_datetime = new DateTime($date . ' ' . $working_hours_end . ':00', $server_timezone);
             
             $start_time = $start_datetime->getTimestamp();
             $end_time = $end_datetime->getTimestamp();
@@ -414,13 +428,13 @@ class EAB_Frontend {
             // Generate slots every duration minutes within working hours
             for ($time = $start_time; $time < $end_time; $time += ($duration * 60)) {
                 $slot_datetime = new DateTime('@' . $time);
-                $slot_datetime->setTimezone($timezone);
+                $slot_datetime->setTimezone($server_timezone);
                 $slots[] = $slot_datetime->format('H:i');
             }
         } else {
-            // Create timezone-aware datetime objects for working hours
-            $start_datetime = new DateTime($date . ' ' . $working_hours_start . ':00', $timezone);
-            $end_datetime = new DateTime($date . ' ' . $working_hours_end . ':00', $timezone);
+            // Create timezone-aware datetime objects for working hours (server timezone for calculations)
+            $start_datetime = new DateTime($date . ' ' . $working_hours_start . ':00', $server_timezone);
+            $end_datetime = new DateTime($date . ' ' . $working_hours_end . ':00', $server_timezone);
             
             $start_time = $start_datetime->getTimestamp();
             $end_time = $end_datetime->getTimestamp();
@@ -428,38 +442,43 @@ class EAB_Frontend {
             // For frontend booking, filter out past times and minimum advance
             $min_advance_time = $this->get_minimum_advance_timestamp();
             
-            // Get current time in the same timezone
-            $now_datetime = new DateTime('now', $timezone);
+            // Get current time in server timezone for calculations
+            $now_datetime = new DateTime('now', $server_timezone);
             $current_time = $now_datetime->getTimestamp();
             
             // Debug logging for time calculations
             $this->debug_log("=== Time Slot Generation Debug ===");
             $this->debug_log("Date: {$date}");
-            $this->debug_log("Current time: " . $now_datetime->format('Y-m-d H:i:s T'));
+            $this->debug_log("Server timezone: " . $server_timezone->getName());
+            $this->debug_log("Display timezone: " . $display_timezone->getName());
+            $this->debug_log("Current time (server): " . $now_datetime->format('Y-m-d H:i:s T'));
             $this->debug_log("Current timestamp: {$current_time}");
             $this->debug_log("Min advance timestamp: {$min_advance_time}");
             $this->debug_log("Min advance setting: " . get_option('eab_min_booking_advance', '2h'));
             $this->debug_log("Working hours: {$working_hours_start} - {$working_hours_end}");
-            $this->debug_log("Timezone: " . $timezone->getName());
             
             for ($time = $start_time; $time < $end_time; $time += ($duration * 60)) {
-                // Use timezone-aware formatting
-                $slot_datetime = new DateTime('@' . $time);
-                $slot_datetime->setTimezone($timezone);
-                $slot_time = $slot_datetime->format('H:i');
+                // Create slot datetime in server timezone for calculations
+                $slot_datetime_server = new DateTime('@' . $time);
+                $slot_datetime_server->setTimezone($server_timezone);
+                
+                // Create slot datetime in display timezone for user display
+                $slot_datetime_display = new DateTime('@' . $time);
+                $slot_datetime_display->setTimezone($display_timezone);
+                $slot_time_display = $slot_datetime_display->format('H:i');
                 
                 // Debug logging for time slot filtering
-                $this->debug_log("Checking slot: {$slot_time}");
+                $this->debug_log("Checking slot: {$slot_time_display} (display) / " . $slot_datetime_server->format('H:i') . " (server)");
                 $this->debug_log("Slot timestamp: {$time}, Current time: {$current_time}, Min advance time: {$min_advance_time}");
                 $this->debug_log("Time > current: " . ($time > $current_time ? 'true' : 'false'));
                 $this->debug_log("Time >= min advance: " . ($time >= $min_advance_time ? 'true' : 'false'));
                 
-                // Skip slots that are in the past or don't meet minimum advance time
+                // Skip slots that are in the past or don't meet minimum advance time (use server time for calculations)
                 if ($time > $current_time && $time >= $min_advance_time) {
-                    $slots[] = $slot_time;
-                    $this->debug_log("Slot {$slot_time} added to available slots");
+                    $slots[] = $slot_time_display; // Store display time for frontend
+                    $this->debug_log("Slot {$slot_time_display} added to available slots");
                 } else {
-                    $this->debug_log("Slot {$slot_time} filtered out");
+                    $this->debug_log("Slot {$slot_time_display} filtered out");
                 }
             }
         }
@@ -468,16 +487,22 @@ class EAB_Frontend {
     }
     
     private function get_booked_slots($date) {
-        global $wpdb;
+        // Get booked slots from CalDAV calendar only
+        $caldav_url = get_option('eab_caldav_url', '');
+        $caldav_username = get_option('eab_caldav_username', '');
+        $caldav_password = get_option('eab_caldav_password', '');
         
-        $table_name = $wpdb->prefix . 'eab_appointments';
-        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
-        $results = $wpdb->get_col($wpdb->prepare(
-            "SELECT appointment_time FROM `{$wpdb->prefix}eab_appointments` WHERE appointment_date = %s AND status = 'confirmed'",
-            $date
-        ));
+        if (empty($caldav_url) || empty($caldav_username) || empty($caldav_password)) {
+            return []; // No CalDAV configured, no booked slots
+        }
         
-        return $results;
+        try {
+            $caldav = new EAB_CalDAV();
+            return $caldav->get_booked_slots_for_date($date);
+        } catch (Exception $e) {
+            // If CalDAV fails, return empty array to be safe
+            return [];
+        }
     }
     
     private function get_caldav_conflicts(string $date, array $available_slots, int $duration): array {
@@ -585,6 +610,10 @@ class EAB_Frontend {
         $time = isset($_POST['time']) ? sanitize_text_field(wp_unslash($_POST['time'])) : '';
         $notes = isset($_POST['notes']) ? sanitize_textarea_field(wp_unslash($_POST['notes'])) : '';
         
+        // Get user timezone information
+        $user_timezone = isset($_POST['user_timezone']) ? sanitize_text_field(wp_unslash($_POST['user_timezone'])) : null;
+        $user_timezone_offset = isset($_POST['user_timezone_offset']) ? intval(wp_unslash($_POST['user_timezone_offset'])) : null;
+        
         // No need to parse JSON anymore - appointment_type is now clean
         $appointment_type_name = $appointment_type;
         
@@ -611,58 +640,43 @@ class EAB_Frontend {
             wp_send_json_error(['message' => __('This time slot conflicts with an existing calendar event.', 'easy-calendar-appointment-booking')]);
         }
         
-        // Save appointment
-        global $wpdb;
-        $table_name = $wpdb->prefix . 'eab_appointments';
+        // Create CalDAV event (no database storage)
+        $caldav_url = get_option('eab_caldav_url', '');
+        $caldav_username = get_option('eab_caldav_username', '');
+        $caldav_password = get_option('eab_caldav_password', '');
         
-        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
-        $result = $wpdb->insert(
-            $table_name,
-            [
-                'name' => $name,
-                'email' => $email,
-                'phone' => $phone,
-                'appointment_type' => $appointment_type_name,
-                'appointment_date' => $date,
-                'appointment_time' => $time,
-                'notes' => $notes,
-                'status' => 'confirmed',
-                'created_at' => current_time('mysql')
-            ],
-            ['%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s']
-        );
+        if (empty($caldav_url) || empty($caldav_username) || empty($caldav_password)) {
+            wp_send_json_error(['message' => __('CalDAV is not configured. Appointments can only be stored in CalDAV calendar.', 'easy-calendar-appointment-booking')]);
+        }
         
-        if ($result) {
-            // Get the appointment ID
-            $appointment_id = $wpdb->insert_id;
+        $caldav = new EAB_CalDAV();
+        
+        // Generate appointment ID for tracking
+        $appointment_id = uniqid('eab_', true);
             
-            // Prepare appointment data for CalDAV and action hook
-            $appointment_data = [
-                'name' => $name,
-                'email' => $email,
-                'phone' => $phone,
-                'appointment_type' => $appointment_type_name,
-                'appointment_date' => $date,
-                'appointment_time' => $time,
-                'appointment_duration' => $appointment_duration,
-                'notes' => $notes
-            ];
-            
-            // Create CalDAV event if CalDAV is configured
-            $caldav_url = get_option('eab_caldav_url', '');
-            $caldav_username = get_option('eab_caldav_username', '');
-            $caldav_password = get_option('eab_caldav_password', '');
-            
-            if (!empty($caldav_url) && !empty($caldav_username) && !empty($caldav_password)) {
-                $caldav = new EAB_CalDAV();
-                
-                $caldav_result = $caldav->create_event($appointment_data);
-                
-                if (!$caldav_result) {
-                    // CalDAV event creation failed but don't fail the booking
-                }
-            }
-            
+        // Generate Jitsi Meet room ID and URL
+        $jitsi_room_id = eab_generate_jitsi_room_id();
+        $jitsi_url = 'https://meet.jit.si/' . $jitsi_room_id;
+        
+        // Prepare appointment data for CalDAV and action hook
+        $appointment_data = [
+            'name' => $name,
+            'email' => $email,
+            'phone' => $phone,
+            'appointment_type' => $appointment_type_name,
+            'appointment_date' => $date,
+            'appointment_time' => $time,
+            'appointment_duration' => $appointment_duration,
+            'notes' => $notes,
+            'jitsi_url' => $jitsi_url,
+            'user_timezone' => $user_timezone,
+            'user_timezone_offset' => $user_timezone_offset
+        ];
+        
+        // Create CalDAV event (required for booking)
+        $caldav_result = $caldav->create_event($appointment_data);
+        
+        if ($caldav_result) {
             // Fire action hook for other plugins/themes to use
             do_action('eab_appointment_booked', $appointment_id, $appointment_data);
             
@@ -676,7 +690,7 @@ class EAB_Frontend {
             
             wp_send_json_success(['message' => __('Appointment booked successfully!', 'easy-calendar-appointment-booking')]);
         } else {
-            wp_send_json_error(['message' => __('Error booking appointment. Please try again.', 'easy-calendar-appointment-booking')]);
+            wp_send_json_error(['message' => __('Error creating appointment in CalDAV calendar. Please try again.', 'easy-calendar-appointment-booking')]);
         }
     }
     

@@ -1841,3 +1841,18 @@
         color: #c3c4c7 !important;
     }
 }
+
+/* Debug Tools Styles */
+.eab-debug-buttons {
+    margin: 15px 0;
+}
+
+.eab-debug-buttons button {
+    margin-right: 10px;
+}
+
+/* Spin animation for loading states */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}

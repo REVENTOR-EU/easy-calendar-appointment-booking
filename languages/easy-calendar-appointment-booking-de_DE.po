@@ -299,15 +299,15 @@ msgstr "Plugin-Informationen"
 msgid "Version:"
 msgstr "Version:"
 
-msgid "Server Time:"
-msgstr "Serverzeit:"
+msgid "Device Time:"
+msgstr "Gerätezeit:"
 
 msgid "System Time (Plugin):"
 msgstr "Systemzeit (Plugin):"
 
 # Frontend Booking Form
 msgid "Book Your Appointment"
-msgstr "Buchen Sie Ihren Termin"
+msgstr "Termin buchen"
 
 msgid "Service"
 msgstr "Service"
@@ -507,3 +507,6 @@ msgstr "Storniert"
 
 msgid "Completed"
 msgstr "Abgeschlossen"
+
+msgid "Appointment details:"
+msgstr "Termindetails:"

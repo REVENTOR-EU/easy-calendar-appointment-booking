@@ -297,7 +297,7 @@ msgstr ""
 msgid "Version:"
 msgstr ""
 
-msgid "Server Time:"
+msgid "Device Time:"
 msgstr ""
 
 msgid "System Time (Plugin):"
@@ -504,4 +504,7 @@ msgid "Cancelled"
 msgstr ""
 
 msgid "Completed"
+msgstr ""
+
+msgid "Appointment details:"
 msgstr ""

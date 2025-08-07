@@ -71,8 +71,10 @@ if (!empty($appointment_types) && is_string($appointment_types[0])) {
                             <div class="eab-service-icon">
                                 <span class="dashicons dashicons-calendar-alt"></span>
                             </div>
-                            <div class="eab-service-name"><?php echo esc_html($type_name); ?></div>
-                            <div class="eab-service-duration"><?php echo esc_html($type_duration); ?> <?php esc_html_e('minutes', 'easy-calendar-appointment-booking'); ?></div>
+                            <div class="eab-service-content">
+                                <div class="eab-service-name"><?php echo esc_html($type_name); ?></div>
+                                <div class="eab-service-duration"><?php echo esc_html($type_duration); ?> <?php esc_html_e('minutes', 'easy-calendar-appointment-booking'); ?></div>
+                            </div>
                         </div>
                     </label>
                     <?php endforeach; ?>

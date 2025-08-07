@@ -259,14 +259,11 @@ function eab_get_version() {
 }
 
 /**
- * Log debug information
+ * Debug logging function - disabled
  */
-function eab_log($message, $level = 'info') {
-    // TEMPORARY: Force logging regardless of WP_DEBUG for testing
-    $log_file = plugin_dir_path(__FILE__) . '../caldav-debug.log';
-    $timestamp = gmdate('Y-m-d H:i:s');
-    $log_entry = "[{$timestamp}] [EAB " . strtoupper($level) . "] {$message}" . PHP_EOL;
-    file_put_contents($log_file, $log_entry, FILE_APPEND | LOCK_EX);
+function eab_log($message) {
+    // Function disabled - no logging performed
+    return;
 }
 
 /**

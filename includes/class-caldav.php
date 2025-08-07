@@ -336,42 +336,94 @@ class EAB_CalDAV {
             return false;
         }
         
-        // Get timezone setting
-        $timezone = $this->get_timezone_string();
+        // Use user's timezone if available, otherwise fall back to site timezone
+        $user_timezone = isset($appointment_data['user_timezone']) ? $appointment_data['user_timezone'] : null;
+        $timezone_string = $user_timezone ? $user_timezone : $this->get_timezone_string();
         
-        // Create DateTime objects with timezone
-        $start_datetime_obj = new DateTime($appointment_data['appointment_date'] . ' ' . $appointment_data['appointment_time'], new DateTimeZone($timezone));
-        $duration = isset($appointment_data['appointment_duration']) ? $appointment_data['appointment_duration'] : get_option('eab_timeslot_duration', 30);
-        
-        // Calculate end time
-        $end_datetime_obj = clone $start_datetime_obj;
-        $end_datetime_obj->add(new DateInterval('PT' . $duration . 'M'));
-        
-        // Convert to UTC for iCal format
-        $start_datetime_obj->setTimezone(new DateTimeZone('UTC'));
-        $end_datetime_obj->setTimezone(new DateTimeZone('UTC'));
-        
-        $start_datetime = $start_datetime_obj->format('Ymd\THis\Z');
-        $end_datetime = $end_datetime_obj->format('Ymd\THis\Z');
+        try {
+            // Create timezone object
+            $timezone = new DateTimeZone($timezone_string);
+            
+            // Create DateTime objects in the user's timezone
+            $start_datetime_obj = new DateTime($appointment_data['appointment_date'] . ' ' . $appointment_data['appointment_time'], $timezone);
+            $duration = isset($appointment_data['appointment_duration']) ? $appointment_data['appointment_duration'] : get_option('eab_timeslot_duration', 30);
+            
+            // Calculate end time
+            $end_datetime_obj = clone $start_datetime_obj;
+            $end_datetime_obj->add(new DateInterval('PT' . $duration . 'M'));
+            
+            // Format with timezone information
+            $start_datetime = $start_datetime_obj->format('Ymd\THis');
+            $end_datetime = $end_datetime_obj->format('Ymd\THis');
+            $use_timezone = true;
+        } catch (Exception $e) {
+            // Fallback to UTC if timezone fails
+            $utc_timezone = new DateTimeZone('UTC');
+            $start_datetime_obj = new DateTime($appointment_data['appointment_date'] . ' ' . $appointment_data['appointment_time'], $utc_timezone);
+            $duration = isset($appointment_data['appointment_duration']) ? $appointment_data['appointment_duration'] : get_option('eab_timeslot_duration', 30);
+            
+            $end_datetime_obj = clone $start_datetime_obj;
+            $end_datetime_obj->add(new DateInterval('PT' . $duration . 'M'));
+            
+            $start_datetime = $start_datetime_obj->format('Ymd\THis\Z');
+            $end_datetime = $end_datetime_obj->format('Ymd\THis\Z');
+            $timezone_string = 'UTC';
+            $use_timezone = false;
+        }
         
         // Event creation parameters prepared
         
         $uid = 'eab-' . md5($appointment_data['appointment_date'] . $appointment_data['appointment_time'] . $appointment_data['appointment_type']);
         $summary = $appointment_data['appointment_type'] . ' - ' . $appointment_data['name'];
-        $description = 'Client: ' . $appointment_data['name'] . '\nEmail: ' . $appointment_data['email'];
+        
+        // Build description with same details as ICS file
+        $description = 'Name: ' . $appointment_data['name'] . '\n';
+        $description .= 'Email: ' . $appointment_data['email'] . '\n';
+        $phone = !empty($appointment_data['phone']) ? $appointment_data['phone'] : '---';
+        $description .= 'Phone: ' . $phone . '\n';
+        if (!empty($appointment_data['jitsi_url'])) {
+            $description .= 'Video Meeting: ' . $appointment_data['jitsi_url'] . '\n';
+        }
+        $description .= 'Type: ' . $appointment_data['appointment_type'] . '\n';
+        $description .= 'Date: ' . $appointment_data['appointment_date'] . '\n';
+        $description .= 'Time: ' . $appointment_data['appointment_time'];
         if (!empty($appointment_data['notes'])) {
             $description .= '\nNotes: ' . $appointment_data['notes'];
         }
         
+        // Set location to Jitsi URL if available
+        $location = !empty($appointment_data['jitsi_url']) ? $appointment_data['jitsi_url'] : 'Online Meeting';
+        
         $ical_content = "BEGIN:VCALENDAR\r\n";
         $ical_content .= "VERSION:2.0\r\n";
         $ical_content .= "PRODID:-//REVENTOR.EU//Easy Calendar Appointment Booking//EN\r\n";
+        
+        // Add VTIMEZONE component if using a specific timezone
+        if ($use_timezone && $timezone_string !== 'UTC') {
+            $ical_content .= "BEGIN:VTIMEZONE\r\n";
+            $ical_content .= "TZID:" . $timezone_string . "\r\n";
+            $ical_content .= "END:VTIMEZONE\r\n";
+        }
+        
         $ical_content .= "BEGIN:VEVENT\r\n";
         $ical_content .= "UID:" . $uid . "\r\n";
-        $ical_content .= "DTSTART:" . $start_datetime . "\r\n";
-        $ical_content .= "DTEND:" . $end_datetime . "\r\n";
+        
+        // Use timezone-aware DTSTART/DTEND if timezone is specified
+        if ($use_timezone && $timezone_string !== 'UTC') {
+            $ical_content .= "DTSTART;TZID=" . $timezone_string . ":" . $start_datetime . "\r\n";
+            $ical_content .= "DTEND;TZID=" . $timezone_string . ":" . $end_datetime . "\r\n";
+        } else {
+            $ical_content .= "DTSTART:" . $start_datetime . "\r\n";
+            $ical_content .= "DTEND:" . $end_datetime . "\r\n";
+        }
+        
         $ical_content .= "SUMMARY:" . $summary . "\r\n";
         $ical_content .= "DESCRIPTION:" . $description . "\r\n";
+        $ical_content .= "LOCATION:" . $location . "\r\n";
+        if (!empty($appointment_data['jitsi_url'])) {
+            $ical_content .= "URL:" . $appointment_data['jitsi_url'] . "\r\n";
+        }
+        $ical_content .= "STATUS:CONFIRMED\r\n";
         $ical_content .= "END:VEVENT\r\n";
         $ical_content .= "END:VCALENDAR\r\n";
         
@@ -478,20 +530,45 @@ class EAB_CalDAV {
     
     /**
      * Custom debug logging to plugin-specific log file
+     * Function disabled - no CalDAV logging performed
      */
     private function debug_log($message) {
-        if (!defined('WP_DEBUG') || !WP_DEBUG) {
-            return;
+        // Function disabled to prevent CalDAV debug logging
+        return;
+    }
+    
+    /**
+     * Get booked time slots for a specific date from CalDAV calendar
+     */
+    public function get_booked_slots_for_date($date) {
+        $booked_slots = array();
+        $events = $this->get_events_for_date($date);
+        
+        foreach ($events as $event) {
+            // Convert event start time to local time slot format (H:i)
+            $local_start = $this->convert_utc_to_local($event['start']);
+            $slot_time = gmdate('H:i', $local_start);
+            $booked_slots[] = $slot_time;
         }
         
-        // Use plugin directory for log file
-        $plugin_dir = dirname(dirname(__FILE__));
-        $log_file = $plugin_dir . '/caldav-debug.log';
-        $timestamp = current_time('Y-m-d H:i:s');
-        $log_entry = '[' . $timestamp . '] EAB CalDAV Debug - ' . $message . PHP_EOL;
+        return array_unique($booked_slots);
+    }
+    
+    /**
+     * Convert UTC timestamp to local timezone
+     */
+    private function convert_utc_to_local($utc_timestamp) {
+        $timezone_string = $this->get_timezone_string();
         
-        // Write to log file
-        file_put_contents($log_file, $log_entry, FILE_APPEND | LOCK_EX);
+        try {
+            $utc_date = new DateTime('@' . $utc_timestamp);
+            $local_timezone = new DateTimeZone($timezone_string);
+            $utc_date->setTimezone($local_timezone);
+            return $utc_date->getTimestamp();
+        } catch (Exception $e) {
+            // If conversion fails, return original timestamp
+            return $utc_timestamp;
+        }
     }
     
     /**

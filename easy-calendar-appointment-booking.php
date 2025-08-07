@@ -56,6 +56,9 @@ class EasyAppointmentBooking {
     }
     
     public function init() {
+        // Load text domain for translations
+        $this->load_textdomain();
+        
         // Check if plugin was properly activated
         if (is_admin() && !get_option('eab_plugin_activated')) {
             add_action('admin_notices', array($this, 'activation_notice'));
@@ -143,6 +146,11 @@ class EasyAppointmentBooking {
         } catch (Exception $e) {
             // Don't prevent activation, just continue silently
         }
+    }
+    
+    public function load_textdomain() {
+        // WordPress automatically loads translations for plugins hosted on WordPress.org
+        // No manual load_plugin_textdomain() call needed since WordPress 4.6
     }
     
     public function activation_notice() {

@@ -364,13 +364,15 @@ $appointment_types = get_option('eab_appointment_types', array(array('name' => _
                     </div>
                 </div>
                 
+
+                
                 <!-- Plugin Information -->
                 <div class="eab-settings-section">
                     <h3><?php esc_html_e('Plugin Information', 'easy-calendar-appointment-booking'); ?></h3>
                     
                     <div class="eab-field-group">
                         <p><strong><?php esc_html_e('Version:', 'easy-calendar-appointment-booking'); ?></strong> <?php echo esc_html(EAB_VERSION); ?></p>
-                        <p><strong><?php esc_html_e('Server Time:', 'easy-calendar-appointment-booking'); ?></strong> <span id="eab-server-time"><?php 
+                        <p><strong><?php esc_html_e('Device Time:', 'easy-calendar-appointment-booking'); ?></strong> <span id="eab-server-time"><?php 
                             echo esc_html(gmdate('Y-m-d H:i:s T'));
                         ?></span></p>
                         <p><strong><?php esc_html_e('System Time (Plugin):', 'easy-calendar-appointment-booking'); ?></strong> <span id="eab-system-time" data-timezone="<?php echo esc_attr($timezone); ?>"><?php 

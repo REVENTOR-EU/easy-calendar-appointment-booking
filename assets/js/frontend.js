@@ -35,6 +35,9 @@
         
         // Initialize accessibility features
         initAccessibility();
+        
+        // Initialize timezone detection
+        initTimezoneDetection();
     }
     
     function initStepNavigation() {
@@ -232,8 +235,12 @@
         const appointmentType = selectedServiceInput.val();
         const appointmentDuration = selectedServiceInput.data('duration') || 30;
         
-        // Show loading state
-        container.html('<div class="eab-loading-slots"><div class="eab-spinner"></div><p>' + (eab_frontend.strings.loading || 'Loading available times...') + '</p></div>');
+        // Detect user's timezone
+        const userTimezone = getUserTimezone();
+        const userTimezoneOffset = getUserTimezoneOffsetMinutes();
+        
+        // Show loading state with CalDAV sync message
+        container.html('<div class="eab-loading-slots"><div class="eab-spinner"></div><p>' + (eab_frontend.strings.syncing || 'Synchronizing with calendar...') + '</p></div>');
         
         // Debug logging for AJAX request
         console.log('=== AJAX Request Debug ===');
@@ -241,39 +248,89 @@
         console.log('Selected appointment type:', appointmentType);
         console.log('Appointment duration:', appointmentDuration);
         console.log('Current browser time:', new Date().toString());
+        console.log('User timezone:', userTimezone);
+        console.log('User timezone offset:', userTimezoneOffset);
         
+        // First synchronize with CalDAV calendar
         $.ajax({
             url: eab_frontend.ajax_url,
             type: 'POST',
             data: {
-                action: 'eab_get_available_slots',
-                nonce: eab_frontend.nonce,
-                date: date,
-                appointment_type: appointmentType,
-                duration: appointmentDuration
+                action: 'eab_sync_calendar',
+                nonce: eab_frontend.nonce
             },
-            success: function(response) {
-                // Debug logging
-                console.log('EAB AJAX Response:', response);
-                console.log('Response success:', response.success);
-                console.log('Response data:', response.data);
+            success: function(syncResponse) {
+                console.log('CalDAV Sync Response:', syncResponse);
                 
-                if (response.success && response.data && response.data.slots && response.data.slots.length > 0) {
-                    console.log('Found', response.data.slots.length, 'time slots:', response.data.slots);
-                    displayTimeSlots(response.data.slots);
-                } else {
-                    console.log('No slots available. Response success:', response.success);
-                    if (response.data) {
-                        console.log('Response data slots:', response.data.slots);
-                        console.log('Response data debug:', response.data.debug);
+                // Update loading message
+                container.html('<div class="eab-loading-slots"><div class="eab-spinner"></div><p>' + (eab_frontend.strings.loading || 'Loading available times...') + '</p></div>');
+                
+                // Now load time slots after sync
+                $.ajax({
+                    url: eab_frontend.ajax_url,
+                    type: 'POST',
+                    data: {
+                        action: 'eab_get_available_slots',
+                        nonce: eab_frontend.nonce,
+                        date: date,
+                        appointment_type: appointmentType,
+                        duration: appointmentDuration,
+                        user_timezone: userTimezone,
+                        user_timezone_offset: getUserTimezoneOffsetMinutes()
+                    },
+                    success: function(response) {
+                        // Debug logging
+                        console.log('EAB AJAX Response:', response);
+                        console.log('Response success:', response.success);
+                        console.log('Response data:', response.data);
+                        
+                        if (response.success && response.data && response.data.slots && response.data.slots.length > 0) {
+                            console.log('Found', response.data.slots.length, 'time slots:', response.data.slots);
+                            displayTimeSlots(response.data.slots);
+                        } else {
+                            console.log('No slots available. Response success:', response.success);
+                            if (response.data) {
+                                console.log('Response data slots:', response.data.slots);
+                                console.log('Response data debug:', response.data.debug);
+                            }
+                            showNoSlotsMessage();
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.log('EAB AJAX Error:', status, error);
+                        console.log('Response text:', xhr.responseText);
+                        showNoSlotsMessage();
                     }
-                    showNoSlotsMessage();
-                }
+                });
             },
             error: function(xhr, status, error) {
-                console.log('EAB AJAX Error:', status, error);
-                console.log('Response text:', xhr.responseText);
-                showNoSlotsMessage();
+                console.log('CalDAV Sync Error:', status, error);
+                // Continue with time slot loading even if sync fails
+                container.html('<div class="eab-loading-slots"><div class="eab-spinner"></div><p>' + (eab_frontend.strings.loading || 'Loading available times...') + '</p></div>');
+                
+                $.ajax({
+                    url: eab_frontend.ajax_url,
+                    type: 'POST',
+                    data: {
+                        action: 'eab_get_available_slots',
+                        nonce: eab_frontend.nonce,
+                        date: date,
+                        appointment_type: appointmentType,
+                        duration: appointmentDuration,
+                        user_timezone: userTimezone,
+                        user_timezone_offset: getUserTimezoneOffsetMinutes()
+                    },
+                    success: function(response) {
+                        if (response.success && response.data && response.data.slots && response.data.slots.length > 0) {
+                            displayTimeSlots(response.data.slots);
+                        } else {
+                            showNoSlotsMessage();
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        showNoSlotsMessage();
+                    }
+                });
             }
         });
     }
@@ -455,7 +512,9 @@
             appointment_duration: formData.appointmentDuration,
             date: formData.appointmentDate,
             time: formData.appointmentTime,
-            notes: formData.notes
+            notes: formData.notes,
+            user_timezone: getUserTimezone(),
+            user_timezone_offset: getUserTimezoneOffsetMinutes()
         };
         
         // Debug logging for duration
@@ -556,6 +615,106 @@
             const stepTitle = $('#step-' + currentStep).find('h4').text();
             stepAnnouncer.text('Step ' + currentStep + ' of ' + totalSteps + ': ' + stepTitle);
         });
+    }
+    
+    function initTimezoneDetection() {
+        // Display user's timezone information
+        const userTimezone = getUserTimezone();
+        const userTimezoneOffset = getUserTimezoneOffsetMinutes();
+        const timezoneInfo = getTimezoneDisplayName();
+        
+        console.log('EAB Debug - User timezone detected:', userTimezone);
+        console.log('EAB Debug - User timezone offset (minutes):', userTimezoneOffset);
+        console.log('EAB Debug - Timezone display info:', timezoneInfo);
+        
+        // Add timezone info to the form if there's a container for it
+        // COMMENTED OUT: Times displayed in your timezone info box
+        // Uncomment the section below to show timezone info box again
+        /*
+        const timezoneContainer = $('.eab-timezone-info');
+        if (timezoneContainer.length) {
+            timezoneContainer.html(
+                '<div style="background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 6px; padding: 12px; margin-bottom: 15px; text-align: center;">' +
+                '<small style="color: #6c757d; font-size: 13px; display: flex; align-items: center; justify-content: center; gap: 6px;">' +
+                '<span class="dashicons dashicons-clock" style="font-size: 16px;"></span>' +
+                '<span>Times displayed in your timezone: <strong>' + timezoneInfo.displayText + '</strong></span>' +
+                '</small>' +
+                '</div>'
+            );
+        } else {
+            // Create timezone info and insert it before time selection area
+            const timezoneInfoElement = $('<div class="eab-timezone-info">' +
+                '<div style="background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 6px; padding: 12px; margin-bottom: 15px; text-align: center;">' +
+                '<small style="color: #6c757d; font-size: 13px; display: flex; align-items: center; justify-content: center; gap: 6px;">' +
+                '<span class="dashicons dashicons-clock" style="font-size: 16px;"></span>' +
+                '<span>Times displayed in your timezone: <strong>' + timezoneInfo.displayText + '</strong></span>' +
+                '</small>' +
+                '</div>' +
+                '</div>');
+            
+            // Insert before time selection area in step 2
+            const timeSelection = $('.eab-time-selection');
+            if (timeSelection.length) {
+                timeSelection.prepend(timezoneInfoElement);
+            } else {
+                // Fallback: insert at the beginning of step 2
+                $('#step-2').prepend(timezoneInfoElement);
+            }
+        }
+        */
+    }
+    
+    function getUserTimezone() {
+        // Get user's timezone using modern browser API
+        try {
+            return Intl.DateTimeFormat().resolvedOptions().timeZone;
+        } catch (e) {
+            // Fallback for older browsers
+            return 'UTC';
+        }
+    }
+    
+    function getUserTimezoneOffset() {
+        // Get timezone offset in minutes (negative for ahead of UTC, positive for behind)
+        const now = new Date();
+        const offsetMinutes = -now.getTimezoneOffset(); // Flip sign to match standard convention
+        return Math.floor(offsetMinutes / 60); // Convert to hours
+    }
+    
+    function getUserTimezoneOffsetMinutes() {
+        // Get timezone offset in minutes for backend processing
+        const now = new Date();
+        return -now.getTimezoneOffset(); // Flip sign to match standard convention
+    }
+    
+    function isDaylightSavingTime() {
+        const now = new Date();
+        const january = new Date(now.getFullYear(), 0, 1);
+        const july = new Date(now.getFullYear(), 6, 1);
+        const stdTimezoneOffset = Math.max(january.getTimezoneOffset(), july.getTimezoneOffset());
+        return now.getTimezoneOffset() < stdTimezoneOffset;
+    }
+    
+    function getTimezoneDisplayName() {
+        const userTimezone = getUserTimezone();
+        const isDST = isDaylightSavingTime();
+        const offsetHours = getUserTimezoneOffset();
+        const offsetMinutes = Math.abs(getUserTimezoneOffsetMinutes() % 60);
+        
+        // Format offset as ±HH:MM
+        const offsetSign = offsetHours >= 0 ? '+' : '-';
+        const offsetFormatted = offsetSign + Math.abs(offsetHours).toString().padStart(2, '0') + 
+                               (offsetMinutes > 0 ? ':' + offsetMinutes.toString().padStart(2, '0') : ':00');
+        
+        // Add DST indicator
+        const dstIndicator = isDST ? ' (Daylight Saving Time)' : ' (Standard Time)';
+        
+        return {
+            timezone: userTimezone,
+            offset: offsetFormatted,
+            isDST: isDST,
+            displayText: userTimezone + ' (UTC' + offsetFormatted + ')' + dstIndicator
+        };
     }
     
     function showServiceSyncIndicator() {

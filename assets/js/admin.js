@@ -36,6 +36,8 @@
         
         // Initialize live time display
         initLiveTime();
+        
+
     }
     
     function initColorPicker() {
@@ -660,5 +662,7 @@
             notice.fadeOut(() => notice.remove());
         });
     }
+    
+
     
 })(jQuery);
